@@ -3,18 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Cricket Club</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+<title>Cricket Management System</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
+  /* --- PROFESSIONAL THEME --- */
   :root {
-    --primary: #2563eb;
-    --primary-dark: #1e40af;
-    --accent: #f59e0b;
-    --bg: #f3f4f6;
+    --bg: #f1f5f9;
     --surface: #ffffff;
-    --text-main: #1f2937;
-    --text-sub: #6b7280;
-    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    --primary: #0f172a; /* Deep Navy */
+    --accent: #3b82f6;  /* Professional Blue */
+    --text-main: #334155; /* Slate */
+    --text-muted: #64748b;
+    --border: #e2e8f0;
+    --success: #10b981;
+    --danger: #ef4444;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   }
 
   body {
@@ -22,197 +25,175 @@
     background-color: var(--bg);
     color: var(--text-main);
     margin: 0; padding-bottom: 80px;
-    -webkit-font-smoothing: antialiased;
   }
 
   /* --- LAYOUT --- */
-  .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+  .container { max-width: 900px; margin: 0 auto; padding: 20px; }
   .hidden { display: none !important; }
-  
+
   /* --- CARDS --- */
   .card {
     background: var(--surface);
-    border-radius: 16px;
-    padding: 20px;
-    margin-bottom: 16px;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 20px;
     box-shadow: var(--shadow);
-    border: 1px solid rgba(0,0,0,0.03);
-    transition: transform 0.2s;
+    border: 1px solid var(--border);
   }
-  .card:active { transform: scale(0.99); }
 
-  h2 { font-size: 1.25rem; margin-top: 0; margin-bottom: 15px; color: var(--text-main); font-weight: 800; letter-spacing: -0.5px; }
-  h3 { font-size: 1rem; color: var(--text-sub); margin: 0 0 10px 0; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
-
-  /* --- COMPONENTS --- */
+  h2 { font-size: 1.1rem; font-weight: 700; color: var(--primary); margin: 0 0 15px 0; letter-spacing: -0.02em; }
+  
+  /* --- BUTTONS --- */
   .btn {
     background: var(--primary); color: white; border: none;
-    padding: 12px 20px; border-radius: 12px; width: 100%;
-    font-weight: 600; font-size: 1rem; cursor: pointer;
-    margin-top: 10px; transition: background 0.2s;
+    padding: 10px 16px; border-radius: 8px; font-weight: 500; font-size: 0.9rem;
+    cursor: pointer; width: 100%; transition: all 0.2s;
   }
-  .btn:hover { background: var(--primary-dark); }
-  .btn-sm { padding: 6px 12px; font-size: 0.85rem; width: auto; margin: 0 4px; }
-  .btn-danger { background: #ef4444; color: white; }
-  .btn-warn { background: #f59e0b; color: white; }
+  .btn:hover { background: #1e293b; transform: translateY(-1px); }
+  .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-main); }
+  .btn-sm { padding: 4px 10px; font-size: 0.8rem; width: auto; }
+  .btn-danger { background: var(--danger); color: white; }
 
+  /* --- INPUTS --- */
   input, select {
-    width: 100%; padding: 12px; margin: 6px 0;
-    border: 1px solid #e5e7eb; border-radius: 10px;
-    background: #f9fafb; font-size: 1rem; box-sizing: border-box;
+    width: 100%; padding: 10px; margin: 6px 0;
+    border: 1px solid var(--border); border-radius: 8px;
+    background: #f8fafc; font-size: 0.9rem; color: var(--primary);
+    box-sizing: border-box;
   }
-  input:focus, select:focus { outline: 2px solid var(--primary); border-color: transparent; }
+  input:focus, select:focus { outline: 2px solid var(--accent); border-color: transparent; }
 
   /* --- NAVIGATION --- */
-  .navbar {
-    background: var(--surface); position: sticky; top: 0; z-index: 100;
-    padding: 15px 0; box-shadow: var(--shadow);
-  }
-  .nav-inner { display: flex; justify-content: space-between; align-items: center; max-width: 800px; margin: 0 auto; padding: 0 20px; }
-  .logo { font-weight: 900; font-size: 1.2rem; color: var(--primary); letter-spacing: -0.5px; }
+  .navbar { background: var(--surface); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
+  .nav-inner { display: flex; justify-content: space-between; align-items: center; max-width: 900px; margin: 0 auto; padding: 12px 20px; }
+  .logo { font-weight: 800; font-size: 1.2rem; color: var(--primary); }
   
-  .nav-links { display: flex; gap: 5px; }
-  .nav-btn {
-    background: transparent; color: var(--text-sub); border: none;
-    padding: 8px 16px; border-radius: 20px; font-weight: 600; font-size: 0.9rem;
-    cursor: pointer; transition: 0.2s;
+  .nav-menu { display: flex; gap: 8px; }
+  .nav-item { 
+    padding: 8px 12px; border-radius: 6px; font-size: 0.9rem; font-weight: 500; 
+    color: var(--text-muted); cursor: pointer; transition: 0.2s; 
   }
-  .nav-btn.active { background: #eff6ff; color: var(--primary); }
+  .nav-item:hover, .nav-item.active { background: #f1f5f9; color: var(--primary); font-weight: 600; }
 
   /* --- TICKER --- */
-  .ticker-wrap {
-    background: #111827; color: white; padding: 10px 0; overflow: hidden; white-space: nowrap; font-size: 0.9rem; font-weight: 500;
-  }
-  .ticker-content { display: inline-block; padding-left: 100%; animation: scroll 20s linear infinite; }
-  @keyframes scroll { 100% { transform: translateX(-100%); } }
+  .ticker-bar { background: var(--primary); color: white; padding: 8px 0; font-size: 0.85rem; overflow: hidden; white-space: nowrap; }
+  .ticker-content { display: inline-block; padding-left: 100%; animation: ticker 25s linear infinite; }
+  @keyframes ticker { 100% { transform: translateX(-100%); } }
 
-  /* --- DATA TABLES --- */
+  /* --- MATCH CARD (PROFESSIONAL) --- */
+  .match-card {
+    display: flex; flex-direction: column; 
+    border-bottom: 1px solid var(--border); padding: 15px 0; cursor: pointer;
+  }
+  .match-card:last-child { border-bottom: none; }
+  .match-header { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 8px; }
+  .stage-badge { 
+    background: #e0f2fe; color: #0284c7; padding: 2px 8px; 
+    border-radius: 12px; font-weight: 700; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .teams-row { display: flex; justify-content: space-between; align-items: center; font-weight: 600; font-size: 1rem; color: var(--primary); }
+  .score-txt { font-weight: 700; color: var(--text-main); }
+  .match-status { font-size: 0.8rem; font-weight: 600; margin-top: 5px; color: var(--success); }
+  
+  /* --- TABLES --- */
   table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
-  th { text-align: left; color: var(--text-sub); padding: 8px; font-size: 0.75rem; text-transform: uppercase; border-bottom: 2px solid #f3f4f6; }
-  td { padding: 12px 8px; border-bottom: 1px solid #f3f4f6; }
-  tr:last-child td { border-bottom: none; }
-  .score-badge { background: #eff6ff; color: var(--primary); padding: 4px 8px; border-radius: 6px; font-weight: 700; font-size: 0.8rem; }
-
-  /* --- MODAL --- */
-  .modal-overlay {
-    position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 2000;
-    display: flex; justify-content: center; align-items: center; backdrop-filter: blur(4px);
-  }
-  .modal-box {
-    background: var(--surface); width: 90%; max-width: 500px;
-    padding: 25px; border-radius: 20px; max-height: 85vh; overflow-y: auto;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-  }
-  .close-modal { float: right; font-size: 1.5rem; cursor: pointer; color: var(--text-sub); }
+  th { text-align: left; padding: 10px; color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid var(--border); }
+  td { padding: 12px 10px; border-bottom: 1px solid var(--border); }
+  
+  /* --- MODALS --- */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.4); z-index: 2000; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(2px); }
+  .modal-box { background: var(--surface); width: 90%; max-width: 500px; padding: 25px; border-radius: 12px; max-height: 85vh; overflow-y: auto; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); }
+  .close-modal { float: right; cursor: pointer; color: var(--text-muted); font-size: 1.5rem; }
 
   /* --- LOADER --- */
-  #loader { position: fixed; inset: 0; background: var(--surface); z-index: 3000; display: flex; justify-content: center; align-items: center; flex-direction: column; }
-  .spinner { width: 40px; height: 40px; border: 4px solid #e5e7eb; border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
+  #loader { position: fixed; inset: 0; background: var(--surface); z-index: 3000; display: flex; justify-content: center; align-items: center; }
+  .spinner { width: 40px; height: 40px; border: 3px solid #e2e8f0; border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
-
-  /* --- MATCH CARD DESIGN --- */
-  .match-card-grid { display: grid; grid-template-columns: 1fr auto 1fr; gap: 10px; align-items: center; text-align: center; }
-  .team-name { font-weight: 700; font-size: 1rem; }
-  .match-score { font-size: 1.2rem; font-weight: 800; color: var(--text-main); }
-  .match-meta { font-size: 0.75rem; color: var(--text-sub); margin-top: 5px; }
-  .vs-badge { background: #f3f4f6; color: var(--text-sub); padding: 4px 8px; border-radius: 50%; font-size: 0.7rem; font-weight: 800; }
 
 </style>
 </head>
 <body>
 
-<div id="loader">
-  <div class="spinner"></div>
-  <p style="margin-top:15px; font-weight:600; color:var(--text-sub);">Loading Club...</p>
-</div>
+<div id="loader"><div class="spinner"></div></div>
 
 <div class="navbar">
   <div class="nav-inner">
-    <div class="logo">CRICKET<span style="color:var(--text-main)">CLUB</span></div>
-    <div class="nav-links">
-      <button class="nav-btn active" onclick="nav('home')" id="n-home">Home</button>
-      <button class="nav-btn" onclick="nav('rankings')" id="n-rank">Stats</button>
-      <button class="nav-btn" onclick="toggleLogin()" id="n-auth">Login</button>
+    <div class="logo">CRICKET<span style="color:var(--accent)">MANAGER</span></div>
+    <div class="nav-menu">
+      <div class="nav-item active" onclick="nav('home')" id="n-home">Dashboard</div>
+      <div class="nav-item" onclick="nav('rankings')" id="n-rank">Stats</div>
+      <div class="nav-item" onclick="toggleLogin()" id="n-auth">Login</div>
     </div>
   </div>
 </div>
 
-<div class="ticker-wrap"><div class="ticker-content" id="ticker-msg">Welcome to the Club...</div></div>
+<div class="ticker-bar"><div class="ticker-content" id="ticker-msg">Loading Announcements...</div></div>
 
 <div class="container">
 
   <div id="home" class="view">
-    <div class="card" style="text-align:center; background:linear-gradient(135deg, var(--primary), var(--primary-dark)); color:white;">
-      <h3 style="color:rgba(255,255,255,0.7);">Next Match</h3>
-      <div id="countdown" style="font-size:2.5rem; font-weight:900; margin:10px 0;">-- : --</div>
-      <div id="next-match-txt" style="font-weight:600; font-size:0.9rem; opacity:0.9;">Loading Schedule...</div>
+    <div class="card" style="background: linear-gradient(135deg, #0f172a, #334155); color: white;">
+      <div style="font-size:0.8rem; opacity:0.7; text-transform:uppercase; letter-spacing:1px;">Next Encounter</div>
+      <div id="next-match-txt" style="font-size:1.4rem; font-weight:700; margin:10px 0;">-- vs --</div>
+      <div id="countdown" style="font-size:2rem; font-weight:800; color:var(--accent);">-- : --</div>
     </div>
 
-    <h2 style="margin-top:20px;">Match Center</h2>
-    <div id="match-list"></div>
+    <div class="card">
+      <h2>Match Schedule</h2>
+      <div id="match-list"></div>
+    </div>
   </div>
 
   <div id="rankings" class="view hidden">
     <div class="card">
-      <h2>Player Leaderboard</h2>
+      <h2>Statistics & Leaderboards</h2>
       <div style="display:flex; gap:10px; margin-bottom:15px;">
         <select id="filt-seas" onchange="renderStats()"><option value="All">All Seasons</option></select>
         <select id="filt-tourn" onchange="renderStats()"><option value="All">All Tournaments</option></select>
       </div>
       
-      <div style="display:flex; gap:10px; margin-bottom:15px; border-bottom:1px solid #eee; padding-bottom:10px;">
-        <button class="btn-sm" onclick="showRankTab('bat')" style="background:#eff6ff; color:var(--primary);">Batting</button>
-        <button class="btn-sm" onclick="showRankTab('bowl')" style="background:#eff6ff; color:var(--primary);">Bowling</button>
-        <button class="btn-sm" onclick="showRankTab('team')" style="background:#eff6ff; color:var(--primary);">Teams</button>
+      <div style="border-bottom:1px solid var(--border); margin-bottom:15px; display:flex; gap:10px;">
+        <button class="btn-sm btn-outline" onclick="showRankTab('bat')">Batting</button>
+        <button class="btn-sm btn-outline" onclick="showRankTab('bowl')">Bowling</button>
+        <button class="btn-sm btn-outline" onclick="showRankTab('team')">Teams</button>
       </div>
-
       <div id="rank-content"></div>
     </div>
   </div>
 
   <div id="admin" class="view hidden">
-    <div class="card" style="background:#eff6ff; border:1px solid #dbeafe;">
-      <div style="display:flex; justify-content:space-between; align-items:center;">
-        <h2 style="margin:0; color:#1e40af;">Admin Panel</h2>
-        <button class="btn-sm btn-danger" onclick="doLogout()">Logout</button>
-      </div>
+    <div class="card" style="display:flex; justify-content:space-between; align-items:center;">
+      <h2 style="margin:0;">Admin Console</h2>
+      <button class="btn-sm btn-danger" onclick="doLogout()">Sign Out</button>
     </div>
 
     <div class="card">
-      <h3>🏆 Tournaments</h3>
-      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+      <h2>1. Tournaments</h2>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
         <input type="text" id="tr-name" placeholder="Name">
-        <input type="text" id="tr-seas" placeholder="Season (2026)">
+        <input type="text" id="tr-seas" placeholder="Season">
       </div>
-      <button class="btn" onclick="saveTourn()">Add / Update Tournament</button>
+      <button class="btn" onclick="saveTourn()">Save Tournament</button>
       <input type="hidden" id="tr-id">
-      <div id="list-tourn" style="margin-top:15px;"></div>
+      <div id="adm-tourn-list" style="margin-top:15px; font-size:0.9rem;"></div>
     </div>
 
     <div class="card">
-      <h3>📢 Announcements</h3>
-      <input type="text" id="an-msg" placeholder="Message">
-      <button class="btn" onclick="api('addAnnouncement', {id:Date.now(), message:val('an-msg'), priority:'High', date:new Date()})">Post</button>
-      <div id="list-ann" style="margin-top:10px;"></div>
-    </div>
-
-    <div class="card">
-      <h3>👤 Players</h3>
-      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+      <h2>2. Players</h2>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
         <input type="text" id="pl-name" placeholder="Name">
-        <input type="password" id="pl-pass" placeholder="Password">
+        <input type="password" id="pl-pass" placeholder="Pass">
       </div>
-      <button class="btn" onclick="savePlayer()">Register Player</button>
+      <button class="btn" onclick="savePlayer()">Save Player</button>
       <input type="hidden" id="pl-id">
-      <div id="list-player" style="margin-top:15px; max-height:200px; overflow-y:auto;"></div>
     </div>
 
     <div class="card">
-      <h3>📅 Schedule</h3>
+      <h2>3. Match Schedule</h2>
       <select id="mc-tourn"></select>
-      <input type="text" id="mc-stage" placeholder="Stage (e.g. Final)">
+      <input type="text" id="mc-stage" placeholder="Stage Name (e.g. Semi Final)">
       <input type="date" id="mc-date">
-      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
         <input type="text" id="mc-ta" placeholder="Team A">
         <input type="text" id="mc-tb" placeholder="Team B">
       </div>
@@ -220,49 +201,50 @@
     </div>
 
     <div class="card">
-      <h3>📝 Scorecard</h3>
+      <h2>4. Scoring</h2>
       <select id="sc-match" onchange="initScore()"></select>
-      <div id="score-box" class="hidden" style="margin-top:15px; padding-top:15px; border-top:1px solid #eee;">
-         <label style="font-size:0.8rem; font-weight:700; color:var(--primary);">ADD PLAYER STAT</label>
-         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-            <select id="sc-player"></select>
-            <select id="sc-team"><option value="">Played For...</option></select>
-         </div>
-         <div style="display:flex; gap:10px;">
-           <input type="number" id="sc-runs" placeholder="Runs">
-           <input type="number" id="sc-wkts" placeholder="Wkts">
-           <input type="number" id="sc-ovrs" placeholder="Overs">
-         </div>
-         <button class="btn" style="background:#374151;" onclick="addStat()">+ Add Stat</button>
-         <div id="stat-log" style="font-size:0.8rem; color:green; margin:5px 0;"></div>
-         
-         <hr style="margin:15px 0; border:none; border-top:1px dashed #ddd;">
-         <label style="font-size:0.8rem; font-weight:700; color:var(--primary);">FINISH MATCH</label>
-         <input type="text" id="sc-winner" placeholder="Winner Team Name">
-         <button class="btn" onclick="finishMatch()">Finalize Result</button>
+      <div id="score-box" class="hidden" style="margin-top:15px;">
+        <div style="padding:15px; background:#f8fafc; border-radius:8px;">
+           <strong>Team Totals:</strong>
+           <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+              <input id="sc-ta-tot" placeholder="Team A Score">
+              <input id="sc-tb-tot" placeholder="Team B Score">
+           </div>
+        </div>
+        <div style="padding:15px; background:#f8fafc; border-radius:8px; margin-top:10px;">
+           <strong>Add Player Stat:</strong>
+           <select id="sc-player"></select>
+           <select id="sc-team"><option value="">Played For...</option></select>
+           <div style="display:flex; gap:10px;">
+             <input type="number" id="sc-runs" placeholder="R">
+             <input type="number" id="sc-wkts" placeholder="W">
+           </div>
+           <button class="btn btn-outline" onclick="addStat()">+ Add Stat</button>
+        </div>
+        <input type="text" id="sc-winner" placeholder="Winner Name">
+        <button class="btn" onclick="finishMatch()">Finalize Match</button>
       </div>
     </div>
   </div>
 
   <div id="profile" class="view hidden">
     <div class="card" style="text-align:center;">
-      <h2 id="pr-name" style="font-size:1.8rem; margin-bottom:5px;"></h2>
-      <p style="color:var(--text-sub);">Career Statistics</p>
-      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-top:20px;">
-        <div style="background:#eff6ff; padding:15px; border-radius:12px;">
-           <div id="pr-runs" style="font-size:2rem; font-weight:900; color:var(--primary);">0</div>
+      <h2 id="pr-name" style="font-size:1.5rem;"></h2>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px; margin:20px 0;">
+         <div style="background:#f1f5f9; padding:15px; border-radius:8px;">
+           <div id="pr-runs" style="font-size:1.8rem; font-weight:800; color:var(--primary);">0</div>
            <small>Runs</small>
-        </div>
-        <div style="background:#fff7ed; padding:15px; border-radius:12px;">
-           <div id="pr-wkts" style="font-size:2rem; font-weight:900; color:var(--accent);">0</div>
+         </div>
+         <div style="background:#f1f5f9; padding:15px; border-radius:8px;">
+           <div id="pr-wkts" style="font-size:1.8rem; font-weight:800; color:var(--accent);">0</div>
            <small>Wickets</small>
-        </div>
+         </div>
       </div>
-      <button class="btn btn-danger" style="margin-top:20px;" onclick="doLogout()">Logout</button>
+      <button class="btn-sm btn-danger" onclick="doLogout()">Logout</button>
     </div>
     <div class="card">
-       <h3>Match History</h3>
-       <table id="pr-hist"><thead><tr><th>Date</th><th>vs</th><th>Perf</th></tr></thead><tbody></tbody></table>
+      <h2>History</h2>
+      <table id="pr-hist"><thead><tr><th>Date</th><th>Versus</th><th>Perf</th></tr></thead><tbody></tbody></table>
     </div>
   </div>
 
@@ -271,343 +253,242 @@
 <div id="mod-login" class="modal-overlay hidden">
   <div class="modal-box">
     <span class="close-modal" onclick="toggleLogin()">&times;</span>
-    <h2 style="text-align:center;">Login</h2>
-    <div style="display:flex; gap:10px; margin-bottom:15px;">
-      <button class="btn" onclick="setLogMode('admin')" id="lm-adm" style="background:#eee; color:#333;">Admin</button>
-      <button class="btn" onclick="setLogMode('player')" id="lm-ply" style="background:#eee; color:#333;">Player</button>
+    <h2 style="text-align:center">Login</h2>
+    <div style="display:flex; justify-content:center; gap:10px; margin-bottom:20px;">
+      <button class="btn-sm btn-outline" onclick="setLogMode('admin')">Admin</button>
+      <button class="btn-sm btn-outline" onclick="setLogMode('player')">Player</button>
     </div>
-    
-    <div id="log-form-adm" class="hidden">
-       <input type="password" id="adm-pin" placeholder="Admin PIN">
-       <button class="btn" onclick="loginAdmin()">Unlock</button>
+    <div id="lf-adm" class="hidden">
+      <input type="password" id="adm-pin" placeholder="Admin PIN">
+      <button class="btn" onclick="loginAdmin()">Access</button>
     </div>
-    <div id="log-form-ply" class="hidden">
-       <select id="log-pid"></select>
-       <input type="password" id="ply-pin" placeholder="Password">
-       <button class="btn" onclick="loginPlayer()">Enter</button>
+    <div id="lf-ply" class="hidden">
+      <select id="log-pid"></select>
+      <input type="password" id="ply-pin" placeholder="Password">
+      <button class="btn" onclick="loginPlayer()">Enter</button>
     </div>
   </div>
 </div>
 
 <div id="mod-match" class="modal-overlay hidden">
   <div class="modal-box">
-    <span class="close-modal" onclick="closeMatchMod()">&times;</span>
-    <h2 id="mm-teams" style="text-align:center; color:var(--primary);"></h2>
-    <p id="mm-meta" style="text-align:center; color:var(--text-sub); margin-bottom:20px;"></p>
-    
-    <div style="background:#f9fafb; padding:15px; border-radius:12px; margin-bottom:20px;">
-      <div style="display:flex; justify-content:space-between; font-weight:700; font-size:1.1rem;">
-        <span id="mm-ta"></span> <span id="mm-sc-a">0/0</span>
-      </div>
-      <div style="display:flex; justify-content:space-between; font-weight:700; font-size:1.1rem; margin-top:5px;">
-        <span id="mm-tb"></span> <span id="mm-sc-b">0/0</span>
-      </div>
-      <div id="mm-res" style="text-align:center; margin-top:15px; color:var(--accent); font-weight:800;"></div>
+    <span class="close-modal" onclick="closeMatch()">&times;</span>
+    <h2 id="mm-title" style="text-align:center;"></h2>
+    <div style="text-align:center; color:var(--text-muted); font-size:0.9rem; margin-bottom:15px;">
+       <span class="stage-badge" id="mm-stage"></span>
     </div>
-
-    <h3>Scorecard</h3>
-    <table id="mm-table"><thead><tr><th>Player</th><th>Team</th><th>R</th><th>W</th></tr></thead><tbody></tbody></table>
+    <div style="background:#f8fafc; padding:20px; border-radius:12px; text-align:center; margin-bottom:20px;">
+       <div id="mm-score-line" style="font-weight:700; font-size:1.1rem; color:var(--primary);"></div>
+       <div id="mm-res" style="color:var(--success); font-weight:600; margin-top:5px;"></div>
+    </div>
+    <table id="mm-tbl"><thead><tr><th>Player</th><th>Team</th><th>R</th><th>W</th></tr></thead><tbody></tbody></table>
   </div>
 </div>
 
 <script>
-// --- CONFIGURATION ---
-const API = "https://script.google.com/macros/s/AKfycbz1AIvBjFPobEfrXoIdQh66oT_MZ5MHiWJ2YdkAz2ue4AYpxzridDJSAaYYh2g_NkOf/exec"; 
-let DB = {};
-let SESS = null;
+const API = "https://script.google.com/macros/s/AKfycbycKqoRhzOri3AnRqJhNT5ZMHaHoHDd5mWvGRePx-jViU6ok891Qubsmb18mj3JKNYF/exec"; 
+let DB = {}; let SESS = null;
 
-// --- INIT ---
 window.onload = async () => {
-  if(localStorage.getItem('rcc_sess')) SESS = JSON.parse(localStorage.getItem('rcc_sess'));
-  updateAuthUI();
+  if(localStorage.getItem('rcc')) SESS = JSON.parse(localStorage.getItem('rcc'));
+  updateNav();
   await loadData();
   setInterval(tick, 1000);
-};
+}
 
 async function loadData() {
-  document.getElementById('loader').classList.remove('hidden');
   try {
-    // Retry logic for robust connection
-    const res = await fetch(API + "?action=getAllData");
-    if(!res.ok) throw new Error("Network response was not ok");
-    DB = await res.json();
-    renderAll();
-  } catch(e) {
-    console.error(e);
-    alert("Connection Error. Please check your internet or the script URL.");
-  }
+    const r = await fetch(API + "?action=getAllData");
+    DB = await r.json();
+    render();
+  } catch(e) { console.error(e); alert("Network Error"); }
   document.getElementById('loader').classList.add('hidden');
 }
 
-function renderAll() {
-  // Ticker
-  if(DB.announcements) document.getElementById('ticker-msg').innerText = DB.announcements.map(a => a.Message).join("   ✦   ");
-  
+function render() {
+  if(DB.announcements) document.getElementById('ticker-msg').innerText = DB.announcements.map(a => a.Message).join("  •  ");
   renderHome();
   renderStats();
   fillDrops();
-  if(SESS?.role === 'admin') renderAdmin();
-  if(SESS?.role === 'player') renderProfile();
+  if(SESS?.role==='admin') renderAdmin();
+  if(SESS?.role==='player') renderProfile();
 }
 
-// --- HOME ---
 function renderHome() {
-  const list = document.getElementById('match-list');
-  list.innerHTML = "";
-  
-  const matches = [...DB.matches].sort((a,b) => new Date(b.Date) - new Date(a.Date));
+  const div = document.getElementById('match-list'); div.innerHTML="";
+  const matches = [...DB.matches].sort((a,b)=>new Date(b.Date)-new Date(a.Date));
   
   matches.forEach(m => {
-    // Auto Calculate Team Scores
-    const stats = DB.stats.filter(s => s.MatchID == m.MatchID);
-    const scoreA = calcScore(stats, m.TeamA);
-    const scoreB = calcScore(stats, m.TeamB);
-    const t = DB.tournaments.find(x => x.ID == m.TournamentID);
+    // Calc Scores
+    const stats = DB.stats.filter(s=>s.MatchID==m.MatchID);
+    const sa = getTeamScore(stats, m.TeamA);
+    const sb = getTeamScore(stats, m.TeamB);
+    const t = DB.tournaments.find(x=>x.ID==m.TournamentID);
     
-    const card = document.createElement('div');
-    card.className = "card";
-    card.innerHTML = `
-      <div class="match-card-grid">
-        <div class="team-name">${m.TeamA}<div class="match-score">${scoreA.r}/${scoreA.w}</div></div>
-        <div><span class="vs-badge">VS</span></div>
-        <div class="team-name">${m.TeamB}<div class="match-score">${scoreB.r}/${scoreB.w}</div></div>
+    div.innerHTML += `
+    <div class="match-card" onclick='openMatch(${JSON.stringify(m)}, ${JSON.stringify(sa)}, ${JSON.stringify(sb)})'>
+      <div class="match-header">
+        <span>${new Date(m.Date).toLocaleDateString()} • ${t?t.Name:''}</span>
+        <span class="stage-badge">${m.Stage}</span>
       </div>
-      <div class="match-meta" style="text-align:center;">
-        ${new Date(m.Date).toLocaleDateString()} • ${t ? t.Name : ''}<br>
-        <span style="color:${m.Winner?'var(--primary)':'var(--accent)'}; font-weight:700;">
-          ${m.Winner ? `Winner: ${m.Winner}` : "Upcoming"}
-        </span>
+      <div class="teams-row">
+        <span>${m.TeamA}</span> <span class="score-txt">${sa.r}/${sa.w}</span>
       </div>
-    `;
-    card.onclick = () => openMatch(m, scoreA, scoreB);
-    list.appendChild(card);
+      <div class="teams-row" style="margin-top:4px;">
+        <span>${m.TeamB}</span> <span class="score-txt">${sb.r}/${sb.w}</span>
+      </div>
+      <div class="match-status">${m.Winner ? `Winner: ${m.Winner}` : 'Upcoming'}</div>
+    </div>`;
   });
 
-  // Countdown
-  const next = matches.filter(m => new Date(m.Date) > new Date()).sort((a,b) => new Date(a.Date) - new Date(b.Date))[0];
+  const next = matches.filter(m=>new Date(m.Date)>new Date()).sort((a,b)=>new Date(a.Date)-new Date(b.Date))[0];
   if(next) {
     window.nextM = new Date(next.Date);
     document.getElementById('next-match-txt').innerText = `${next.TeamA} vs ${next.TeamB}`;
   } else {
-    document.getElementById('next-match-txt').innerText = "No Scheduled Matches";
-    document.getElementById('countdown').innerText = "-- : --";
+    document.getElementById('next-match-txt').innerText = "Season Completed";
+    document.getElementById('countdown').innerText = "--";
   }
 }
 
-function calcScore(stats, teamName) {
+function getTeamScore(stats, team) {
+  // Check for override score first (TEAM_TOTAL_X)
+  const override = stats.find(s=>s.Team==team && s.PlayerID.includes("TEAM_TOTAL"));
+  if(override) return {r:override.Runs, w:override.Wickets||0}; // Manual Entry
+
+  // Auto Calc
   let r=0, w=0;
-  // Sum runs for players of this team
-  stats.filter(s => s.Team == teamName).forEach(s => r += Number(s.Runs));
-  // Wickets lost = Wickets taken by OTHER team
-  stats.filter(s => s.Team != teamName).forEach(s => w += Number(s.Wickets));
+  stats.filter(s=>s.Team==team && !s.PlayerID.includes("TEAM")).forEach(s=>r+=Number(s.Runs));
+  stats.filter(s=>s.Team!=team && !s.PlayerID.includes("TEAM")).forEach(s=>w+=Number(s.Wickets));
   return {r, w};
 }
 
-function tick() {
-  if(!window.nextM) return;
-  const d = window.nextM - new Date();
-  if(d<=0) return;
-  const days = Math.floor(d/(1000*60*60*24));
-  const hrs = Math.floor((d%(1000*60*60*24))/(1000*60*60));
-  document.getElementById('countdown').innerText = `${days}d ${hrs}h`;
-}
-
-// --- STATS ---
-function renderStats() {
-  // Logic to switch between Batting/Bowling tabs
-  // Defaulting to Batting for simplicity in this view
-  const tab = window.curRankTab || 'bat';
-  const sf = val('filt-seas'); const tf = val('filt-tourn');
-  
-  let d = {};
-  DB.stats.forEach(s => {
-    const m = DB.matches.find(x => x.MatchID == s.MatchID);
-    if(!m) return;
-    const t = DB.tournaments.find(x => x.ID == m.TournamentID);
-    if(sf !== "All" && t.Season != sf) return;
-    if(tf !== "All" && t.ID != tf) return;
-    
-    if(!d[s.PlayerID]) d[s.PlayerID] = {n:'', r:0, w:0, team:''};
-    const p = DB.players.find(x => x.ID == s.PlayerID);
-    d[s.PlayerID].n = p ? p.Name : 'Unknown';
-    d[s.PlayerID].r += Number(s.Runs);
-    d[s.PlayerID].w += Number(s.Wickets);
-  });
-  
-  const div = document.getElementById('rank-content');
-  if(tab === 'bat') {
-    const sorted = Object.values(d).sort((a,b) => b.r - a.r);
-    div.innerHTML = `<table><thead><tr><th>#</th><th>Name</th><th>Runs</th></tr></thead><tbody>
-      ${sorted.map((p,i) => `<tr><td>${i+1}</td><td>${p.n}</td><td><b>${p.r}</b></td></tr>`).join('')}
-    </tbody></table>`;
-  } else if (tab === 'bowl') {
-    const sorted = Object.values(d).sort((a,b) => b.w - a.w);
-    div.innerHTML = `<table><thead><tr><th>#</th><th>Name</th><th>Wkts</th></tr></thead><tbody>
-      ${sorted.map((p,i) => `<tr><td>${i+1}</td><td>${p.n}</td><td><b>${p.w}</b></td></tr>`).join('')}
-    </tbody></table>`;
-  } else {
-    // Teams logic
-    let teams = {};
-    DB.matches.filter(m => m.Status === "Completed").forEach(m => {
-       [m.TeamA, m.TeamB].forEach(tm => {
-         if(!teams[tm]) teams[tm] = {m:0, w:0, l:0};
-         teams[tm].m++;
-         if(m.Winner === tm) teams[tm].w++; else teams[tm].l++;
-       });
-    });
-    div.innerHTML = `<table><thead><tr><th>Team</th><th>M</th><th>W</th><th>L</th></tr></thead><tbody>
-      ${Object.keys(teams).sort((a,b) => teams[b].w - teams[a].w).map(k => `<tr><td>${k}</td><td>${teams[k].m}</td><td>${teams[k].w}</td><td>${teams[k].l}</td></tr>`).join('')}
-    </tbody></table>`;
-  }
-}
-function showRankTab(t) { window.curRankTab = t; renderStats(); }
-
-// --- ADMIN ---
-function renderAdmin() {
-  const tl = document.getElementById('list-tourn'); tl.innerHTML="";
-  DB.tournaments.forEach(t => {
-     tl.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:5px; padding-bottom:5px; border-bottom:1px solid #eee;">
-       <span>${t.Name} (${t.Season})</span>
-       <div><button class="btn-sm btn-warn" onclick="editT('${t.ID}')">Edit</button><button class="btn-sm btn-danger" onclick="api('deleteTournament',{id:'${t.ID}'})">X</button></div>
-     </div>`;
-  });
-  
-  const pl = document.getElementById('list-player'); pl.innerHTML="";
-  DB.players.forEach(p => {
-     pl.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:5px; padding-bottom:5px; border-bottom:1px solid #eee;">
-       <span>${p.Name}</span>
-       <div><button class="btn-sm btn-warn" onclick="editP('${p.ID}')">Edit</button><button class="btn-sm btn-danger" onclick="api('deletePlayer',{id:'${p.ID}'})">X</button></div>
-     </div>`;
-  });
-  
-  const al = document.getElementById('list-ann'); al.innerHTML="";
-  DB.announcements.forEach(a => {
-     al.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span>${a.Message}</span><button class="btn-sm btn-danger" onclick="api('deleteAnnouncement',{id:'${a.ID}'})">X</button></div>`;
-  });
-}
-
-// Admin Actions
-function saveTourn() {
-  const id = val('tr-id') || 'T'+Date.now();
-  const act = val('tr-id') ? 'editTournament' : 'addTournament';
-  api(act, {id:id, name:val('tr-name'), season:val('tr-seas')});
-  val('tr-id', ''); val('tr-name', ''); val('tr-seas', '');
-}
-function editT(id) { const t=DB.tournaments.find(x=>x.ID==id); val('tr-name', t.Name); val('tr-seas', t.Season); val('tr-id', t.ID); }
-
-function savePlayer() {
-  const id = val('pl-id') || 'P'+Date.now();
-  // Simplified: Always add, if ID exists backend can handle or we just delete first
-  if(val('pl-id')) api('deletePlayer', {id:id}); // Delete old first for edit
-  api('addPlayer', {id:id, name:val('pl-name'), password:val('pl-pass'), role:'All', team:'Flex'});
-  val('pl-id', ''); val('pl-name', ''); val('pl-pass', '');
-}
-function editP(id) { const p=DB.players.find(x=>x.ID==id); val('pl-name', p.Name); val('pl-pass', p.Password); val('pl-id', p.ID); }
-
-function saveMatch() {
-  api('addMatch', {id:'M'+Date.now(), tournId:val('mc-tourn'), stage:val('mc-stage'), date:val('mc-date'), teamA:val('mc-ta'), teamB:val('mc-tb')});
-}
-
-function initScore() {
-  const m = DB.matches.find(x => x.MatchID == val('sc-match'));
-  if(m) {
-    document.getElementById('score-box').classList.remove('hidden');
-    document.getElementById('sc-team').innerHTML = `<option value="${m.TeamA}">${m.TeamA}</option><option value="${m.TeamB}">${m.TeamB}</option>`;
-  }
-}
-function addStat() {
-  api('addStat', {
-    linkId:'L'+Date.now(), matchId:val('sc-match'), playerId:val('sc-player'), 
-    runs:val('sc-runs'), wickets:val('sc-wkts'), overs:val('sc-ovrs'), team:val('sc-team')
-  }, true);
-  document.getElementById('stat-log').innerText = "Stat Added!";
-}
-function finishMatch() {
-  api('updateMatchResult', {matchId:val('sc-match'), winner:val('sc-winner')});
-}
-
-// --- PROFILE ---
-function renderProfile() {
-  if(!SESS) return;
-  const p = DB.players.find(x => x.ID == SESS.id);
-  document.getElementById('pr-name').innerText = p.Name;
-  const stats = DB.stats.filter(s => s.PlayerID == p.ID);
-  
-  let r=0, w=0;
-  const tb = document.querySelector('#pr-hist tbody'); tb.innerHTML="";
-  stats.forEach(s => {
-    r += Number(s.Runs); w += Number(s.Wickets);
-    const m = DB.matches.find(x => x.MatchID == s.MatchID);
-    if(m) tb.innerHTML += `<tr><td>${new Date(m.Date).toLocaleDateString()}</td><td>${s.Team==m.TeamA?m.TeamB:m.TeamA}</td><td>${s.Runs}r ${s.Wickets}w</td></tr>`;
-  });
-  document.getElementById('pr-runs').innerText = r;
-  document.getElementById('pr-wkts').innerText = w;
-}
-
-// --- UTILS ---
-function api(act, data, silent) {
-  data.action = act; data.password = '9908';
-  if(!silent) document.getElementById('loader').classList.remove('hidden');
-  fetch(API, {method:'POST', mode:'no-cors', body:JSON.stringify(data)})
-  .then(() => setTimeout(() => { loadData(); if(!silent) alert("Done"); }, 1500));
-}
-
 function openMatch(m, sa, sb) {
-  document.getElementById('mm-teams').innerText = `${m.TeamA} vs ${m.TeamB}`;
-  document.getElementById('mm-meta').innerText = `${m.Stage}`;
-  document.getElementById('mm-res').innerText = m.Winner ? `Won by ${m.Winner}` : 'In Progress';
-  document.getElementById('mm-ta').innerText = m.TeamA; document.getElementById('mm-sc-a').innerText = `${sa.r}/${sa.w}`;
-  document.getElementById('mm-tb').innerText = m.TeamB; document.getElementById('mm-sc-b').innerText = `${sb.r}/${sb.w}`;
+  document.getElementById('mm-title').innerText = `${m.TeamA} vs ${m.TeamB}`;
+  document.getElementById('mm-stage').innerText = m.Stage;
+  document.getElementById('mm-score-line').innerHTML = `${m.TeamA}: ${sa.r}/${sa.w} <br> ${m.TeamB}: ${sb.r}/${sb.w}`;
+  document.getElementById('mm-res').innerText = m.Winner ? `${m.Winner} Won` : 'Scheduled';
   
-  const tb = document.querySelector('#mm-table tbody'); tb.innerHTML="";
-  DB.stats.filter(s => s.MatchID == m.MatchID).forEach(s => {
-     const p = DB.players.find(x => x.ID == s.PlayerID);
-     tb.innerHTML += `<tr><td>${p?p.Name:'Unk'}</td><td>${s.Team}</td><td>${s.Runs}</td><td>${s.Wickets}</td></tr>`;
+  const tb = document.querySelector('#mm-tbl tbody'); tb.innerHTML="";
+  DB.stats.filter(s=>s.MatchID==m.MatchID && !s.PlayerID.includes("TEAM")).forEach(s=>{
+    const p=DB.players.find(x=>x.ID==s.PlayerID);
+    tb.innerHTML+=`<tr><td>${p?p.Name:'Unk'}</td><td>${s.Team}</td><td>${s.Runs}</td><td>${s.Wickets}</td></tr>`;
   });
   document.getElementById('mod-match').classList.remove('hidden');
 }
-function closeMatchMod() { document.getElementById('mod-match').classList.add('hidden'); }
 
+function renderStats() {
+  const tab = window.curTab || 'bat';
+  const d = {};
+  DB.stats.forEach(s => {
+     if(s.PlayerID.includes("TEAM")) return;
+     const m = DB.matches.find(x=>x.MatchID==s.MatchID); if(!m)return;
+     if(!d[s.PlayerID]) d[s.PlayerID]={n:'',r:0,w:0};
+     const p=DB.players.find(x=>x.ID==s.PlayerID);
+     d[s.PlayerID].n=p?p.Name:'Unk';
+     d[s.PlayerID].r+=Number(s.Runs); d[s.PlayerID].w+=Number(s.Wickets);
+  });
+  
+  const div = document.getElementById('rank-content');
+  if(tab=='bat') {
+     const so = Object.values(d).sort((a,b)=>b.r-a.r);
+     div.innerHTML = `<table><thead><tr><th>Name</th><th>Runs</th></tr></thead><tbody>${so.map(x=>`<tr><td>${x.n}</td><td>${x.r}</td></tr>`).join('')}</tbody></table>`;
+  } else if(tab=='bowl') {
+     const so = Object.values(d).sort((a,b)=>b.w-a.w);
+     div.innerHTML = `<table><thead><tr><th>Name</th><th>Wkts</th></tr></thead><tbody>${so.map(x=>`<tr><td>${x.n}</td><td>${x.w}</td></tr>`).join('')}</tbody></table>`;
+  } else {
+     // Teams
+     let tm={}; 
+     DB.matches.filter(m=>m.Status=='Completed').forEach(m=>{
+        [m.TeamA,m.TeamB].forEach(t=>{ if(!tm[t])tm[t]={w:0}; if(m.Winner==t)tm[t].w++; });
+     });
+     div.innerHTML = `<table><thead><tr><th>Team</th><th>Wins</th></tr></thead><tbody>${Object.keys(tm).sort((a,b)=>tm[b].w-tm[a].w).map(k=>`<tr><td>${k}</td><td>${tm[k].w}</td></tr>`).join('')}</tbody></table>`;
+  }
+}
+
+// ADMIN
+function saveTourn() { api(val('tr-id')?'editTournament':'addTournament', {id:val('tr-id')||'T'+Date.now(), name:val('tr-name'), season:val('tr-seas')}); }
+function renderAdmin() {
+  const d=document.getElementById('adm-tourn-list'); d.innerHTML="";
+  DB.tournaments.forEach(t=>{
+    d.innerHTML+=`<div style='display:flex; justify-content:space-between; padding:5px; border-bottom:1px solid #eee;'><span>${t.Name}</span><button class='btn-sm btn-outline' onclick="val('tr-name','${t.Name}');val('tr-seas','${t.Season}');val('tr-id','${t.ID}')">Edit</button></div>`;
+  });
+}
+function savePlayer() { api('addPlayer', {id:'P'+Date.now(), name:val('pl-name'), password:val('pl-pass'), role:'All', team:'Flex'}); }
+function saveMatch() { api('addMatch', {id:'M'+Date.now(), tournId:val('mc-tourn'), stage:val('mc-stage'), date:val('mc-date'), teamA:val('mc-ta'), teamB:val('mc-tb')}); }
+function initScore() {
+  const m=DB.matches.find(x=>x.MatchID==val('sc-match'));
+  if(m) {
+     document.getElementById('score-box').classList.remove('hidden');
+     document.getElementById('sc-team').innerHTML=`<option value="${m.TeamA}">${m.TeamA}</option><option value="${m.TeamB}">${m.TeamB}</option>`;
+  }
+}
+function addStat() {
+  api('addStat', {linkId:'L'+Date.now(), matchId:val('sc-match'), playerId:val('sc-player'), team:val('sc-team'), runs:val('sc-runs'), wickets:val('sc-wkts')}, true);
+}
+function finishMatch() {
+  const m=DB.matches.find(x=>x.MatchID==val('sc-match'));
+  // Save Team Totals
+  api('addStat', {linkId:'TT'+Date.now(), matchId:m.MatchID, playerId:'TEAM_TOTAL_A', team:m.TeamA, runs:val('sc-ta-tot')}, true);
+  api('addStat', {linkId:'TT'+Date.now(), matchId:m.MatchID, playerId:'TEAM_TOTAL_B', team:m.TeamB, runs:val('sc-tb-tot')}, true);
+  api('updateMatchResult', {matchId:m.MatchID, winner:val('sc-winner')});
+}
+
+// UTILS
+function api(act, pl, s) {
+  pl.action=act; pl.password='9908';
+  if(!s) document.getElementById('loader').classList.remove('hidden');
+  fetch(API, {method:'POST', mode:'no-cors', body:JSON.stringify(pl)})
+  .then(()=>setTimeout(()=>{loadData(); alert("Saved");},1500));
+}
 function nav(id) {
-  document.querySelectorAll('.view').forEach(x => x.classList.add('hidden'));
+  document.querySelectorAll('.view').forEach(v=>v.classList.add('hidden'));
   document.getElementById(id).classList.remove('hidden');
-  document.querySelectorAll('.nav-btn').forEach(x => x.classList.remove('active'));
-  document.getElementById('n-'+(id=='home'?'home':id=='rankings'?'rank':id=='admin'?'auth':'auth')).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));
+  document.getElementById('n-'+(id=='home'?'home':id=='rankings'?'rank':'auth')).classList.add('active');
 }
-
+function showRankTab(t) { window.curTab=t; renderStats(); }
+function tick() {
+  if(!window.nextM) return;
+  const d=window.nextM-new Date();
+  if(d>0) { const ds=Math.floor(d/86400000); const hs=Math.floor((d%86400000)/3600000); document.getElementById('countdown').innerText=`${ds}d ${hs}h`; }
+}
 function fillDrops() {
-  const f = (i, d, c) => document.getElementById(i).innerHTML = d.map(c).join('');
-  f('mc-tourn', DB.tournaments, t => `<option value="${t.ID}">${t.Name}</option>`);
-  f('sc-player', DB.players, p => `<option value="${p.ID}">${p.Name}</option>`);
-  f('log-pid', DB.players, p => `<option value="${p.ID}">${p.Name}</option>`);
-  f('f-seas', [...new Set(DB.tournaments.map(t=>t.Season))], s=>`<option value="${s}">${s}</option>`);
-  f('f-tourn', DB.tournaments, t=>`<option value="${t.ID}">${t.Name}</option>`);
-  const mo = DB.matches.filter(m=>m.Status!='Completed').map(m=>`<option value="${m.MatchID}">${m.TeamA} vs ${m.TeamB}</option>`).join('');
-  document.getElementById('sc-match').innerHTML = `<option>Select Match</option>` + mo;
+  const f=(i,d,fn)=>document.getElementById(i).innerHTML=d.map(fn).join('');
+  f('mc-tourn', DB.tournaments, t=>`<option value="${t.ID}">${t.Name}</option>`);
+  f('sc-player', DB.players, p=>`<option value="${p.ID}">${p.Name}</option>`);
+  f('log-pid', DB.players, p=>`<option value="${p.ID}">${p.Name}</option>`);
+  f('filt-seas', [...new Set(DB.tournaments.map(t=>t.Season))], s=>`<option value="${s}">${s}</option>`);
+  f('filt-tourn', DB.tournaments, t=>`<option value="${t.ID}">${t.Name}</option>`);
+  document.getElementById('sc-match').innerHTML="<option>Select</option>"+DB.matches.filter(m=>m.Status!='Completed').map(m=>`<option value="${m.MatchID}">${m.TeamA} vs ${m.TeamB}</option>`).join('');
 }
-
 function val(id, v) { if(v===undefined) return document.getElementById(id).value; else document.getElementById(id).value=v; }
-
-// Auth
 function toggleLogin() { document.getElementById('mod-login').classList.remove('hidden'); }
-function setLogMode(m) { 
-  document.getElementById('log-form-adm').classList.toggle('hidden', m!='admin'); 
-  document.getElementById('log-form-ply').classList.toggle('hidden', m!='player');
-  document.getElementById('lm-adm').style.background = m=='admin'?'var(--primary)':'#eee';
-  document.getElementById('lm-adm').style.color = m=='admin'?'#fff':'#333';
-  document.getElementById('lm-ply').style.background = m=='player'?'var(--primary)':'#eee';
-  document.getElementById('lm-ply').style.color = m=='player'?'#fff':'#333';
+function setLogMode(m) {
+   document.getElementById('lf-adm').classList.toggle('hidden', m!='admin');
+   document.getElementById('lf-ply').classList.toggle('hidden', m!='player');
 }
-function loginAdmin() { if(val('adm-pin')=='9908') { auth({role:'admin'}); } else alert("Bad PIN"); }
-function loginPlayer() { const p=DB.players.find(x=>x.ID==val('log-pid')&&x.Password==val('ply-pin')); if(p) auth({role:'player', id:p.ID}); else alert("Fail"); }
-function auth(s) { SESS=s; localStorage.setItem('rcc_sess', JSON.stringify(s)); updateAuthUI(); document.getElementById('mod-login').classList.add('hidden'); nav(s.role=='admin'?'admin':'profile'); }
-function doLogout() { SESS=null; localStorage.removeItem('rcc_sess'); updateAuthUI(); nav('home'); }
-function updateAuthUI() { 
-  const isL = !!SESS; 
-  document.getElementById('n-auth').innerText = isL ? (SESS.role=='admin'?'Admin':'Profile') : 'Login'; 
-  if(isL && SESS.role=='admin') document.getElementById('n-auth').onclick = () => nav('admin');
-  else if(isL && SESS.role=='player') document.getElementById('n-auth').onclick = () => nav('profile');
+function loginAdmin() { if(val('adm-pin')=='9908') auth({role:'admin'}); else alert('Invalid'); }
+function loginPlayer() { const p=DB.players.find(x=>x.ID==val('log-pid')&&x.Password==val('ply-pin')); if(p) auth({role:'player', id:p.ID}); else alert('Invalid'); }
+function auth(s) { SESS=s; localStorage.setItem('rcc', JSON.stringify(s)); updateNav(); document.getElementById('mod-login').classList.add('hidden'); nav(s.role=='admin'?'admin':'profile'); }
+function doLogout() { SESS=null; localStorage.removeItem('rcc'); updateNav(); nav('home'); }
+function updateNav() {
+  const l=!!SESS;
+  document.getElementById('n-auth').innerText = l ? (SESS.role=='admin'?'Admin':'Profile') : 'Login';
+  if(l) document.getElementById('n-auth').onclick = () => nav(SESS.role=='admin'?'admin':'profile');
   else document.getElementById('n-auth').onclick = toggleLogin;
+}
+function closeMatch() { document.getElementById('mod-match').classList.add('hidden'); }
+// Profile
+function renderProfile() {
+  if(!SESS) return;
+  const p=DB.players.find(x=>x.ID==SESS.id);
+  document.getElementById('pr-name').innerText=p.Name;
+  const s=DB.stats.filter(x=>x.PlayerID==p.ID);
+  let r=0,w=0; s.forEach(x=>{r+=Number(x.Runs); w+=Number(x.Wickets)});
+  document.getElementById('pr-runs').innerText=r; document.getElementById('pr-wkts').innerText=w;
+  const tb=document.querySelector('#pr-hist tbody'); tb.innerHTML="";
+  s.forEach(x=>{const m=DB.matches.find(z=>z.MatchID==x.MatchID); if(m) tb.innerHTML+=`<tr><td>${new Date(m.Date).toLocaleDateString()}</td><td>${x.Team==m.TeamA?m.TeamB:m.TeamA}</td><td>${x.Runs}r</td></tr>`});
 }
 </script>
 </body>
