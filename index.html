@@ -5,56 +5,59 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cricket Club Manager</title>
 <style>
-  /* --- DESIGN SYSTEM: NO BLACK --- */
+  /* --- DESIGN SYSTEM --- */
   :root {
-    --primary: #1565C0; /* Deep Blue */
-    --secondary: #00897B; /* Teal */
-    --accent: #FF6F00; /* Amber */
-    --text-dark: #263238; /* Blue Grey (Not Black) */
+    --primary: #1565C0;
+    --secondary: #00897B;
+    --accent: #FF6F00;
+    --text-dark: #263238;
     --text-med: #546E7A;
-    --bg-body: #F5F7FA;
+    --bg-body: #E3F2FD; /* Lighter Blue Background */
     --bg-card: #FFFFFF;
-    --border: #CFD8DC;
   }
 
   body { font-family: 'Segoe UI', Roboto, sans-serif; background: var(--bg-body); color: var(--text-dark); margin: 0; padding-bottom: 50px; }
   
-  /* --- COMPONENTS --- */
+  /* --- NAVBAR --- */
   .navbar { background: linear-gradient(135deg, var(--primary), #42A5F5); padding: 15px; color: white; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
   .navbar h1 { margin: 0; font-size: 1.2rem; }
   .nav-links button { background: none; border: none; color: white; font-size: 1rem; margin-left: 15px; cursor: pointer; opacity: 0.9; }
   .nav-links button:hover { opacity: 1; text-decoration: underline; }
 
   .container { max-width: 1000px; margin: 20px auto; padding: 0 15px; }
-
-  .card { background: var(--bg-card); border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 20px; border: 1px solid var(--border); }
+  .card { background: var(--bg-card); border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 20px; }
   
+  /* --- ELEMENTS --- */
   h2 { color: var(--primary); margin-top: 0; border-bottom: 2px solid #E3F2FD; padding-bottom: 10px; }
-
-  /* --- FORMS --- */
-  input, select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid var(--border); border-radius: 6px; background: #FAFAFA; color: var(--text-dark); box-sizing: border-box; }
-  input:focus, select:focus { border-color: var(--primary); outline: none; }
-  
-  .btn { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; margin-top: 10px; }
+  input, select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #CFD8DC; border-radius: 6px; box-sizing: border-box; }
+  .btn { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 10px; }
   .btn:hover { background: #0D47A1; }
-  .btn-accent { background: var(--accent); }
-
-  /* --- TABLES --- */
+  
   table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-  th { background: #E3F2FD; color: var(--primary); padding: 10px; text-align: left; font-weight: 600; }
+  th { background: #E3F2FD; color: var(--primary); padding: 10px; text-align: left; }
   td { padding: 10px; border-bottom: 1px solid #ECEFF1; color: var(--text-med); }
 
-  /* --- TICKER --- */
   .marquee { background: var(--secondary); color: white; padding: 10px; overflow: hidden; white-space: nowrap; font-weight: 600; }
   
-  /* --- LOADING/HIDDEN --- */
-  .hidden { display: none; }
-  .loading-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(255,255,255,0.8); display: flex; justify-content: center; align-items: center; z-index: 999; }
+  /* --- FIX FOR LOADING SCREEN --- */
+  .loading-overlay { 
+      position: fixed; top:0; left:0; width:100%; height:100%; 
+      background: rgba(255,255,255,0.95); 
+      display: flex; justify-content: center; align-items: center; 
+      z-index: 9999; flex-direction: column;
+  }
+  
+  /* IMPORTANT: This forces the loader to hide when we add the class */
+  .hidden { display: none !important; }
+
 </style>
 </head>
 <body>
 
-<div id="loader" class="loading-overlay"><div>Loading Data...</div></div>
+<div id="loader" class="loading-overlay">
+    <h2 style="border:none;">Loading Club Data...</h2>
+    <div style="color: #666;">Please wait...</div>
+</div>
 
 <div class="navbar">
   <h1>🏏 Club Manager</h1>
@@ -65,7 +68,7 @@
   </div>
 </div>
 
-<div class="marquee" id="ticker">Waiting for announcements...</div>
+<div class="marquee" id="ticker">Loading announcements...</div>
 
 <div class="container">
 
@@ -73,7 +76,7 @@
     <div class="card" style="text-align: center;">
       <h2 style="border:none;">Next Match Countdown</h2>
       <div id="countdown" style="font-size: 2rem; color: var(--accent); font-weight: bold;">--:--:--</div>
-      <p id="next-match-info" style="color: var(--text-med);">Loading schedule...</p>
+      <p id="next-match-info" style="color: var(--text-med);">Checking schedule...</p>
     </div>
 
     <div class="card">
@@ -100,7 +103,6 @@
   </div>
 
   <div id="admin" class="view hidden">
-    
     <div id="admin-login" class="card">
       <h2>Admin Access</h2>
       <input type="password" id="admin-pass-input" placeholder="Enter Password (9908)">
@@ -108,147 +110,113 @@
     </div>
 
     <div id="admin-dash" class="hidden">
-      
       <div class="card">
         <h2>1. Create Tournament</h2>
-        <input type="text" id="t-name" placeholder="Tournament Name (e.g. Winter Cup)">
-        <input type="text" id="t-season" placeholder="Season Year (e.g. 2026)">
-        <button class="btn" onclick="api('addTournament', {name: val('t-name'), season: val('t-season')})">Create Tournament</button>
+        <input type="text" id="t-name" placeholder="Name">
+        <input type="text" id="t-season" placeholder="Season (e.g. 2026)">
+        <button class="btn" onclick="api('addTournament', {name: val('t-name'), season: val('t-season')})">Create</button>
       </div>
 
       <div class="card">
         <h2>2. Schedule Match</h2>
-        <label>Select Tournament:</label>
         <select id="m-tourn-select"></select>
-        <input type="text" id="m-stage" placeholder="Custom Stage Name (e.g. Semi Final 1)">
+        <input type="text" id="m-stage" placeholder="Stage (e.g. Final)">
         <input type="date" id="m-date">
         <div style="display:flex; gap:10px">
-          <input type="text" id="m-teamA" placeholder="Team A Name">
-          <input type="text" id="m-teamB" placeholder="Team B Name">
+          <input type="text" id="m-teamA" placeholder="Team A">
+          <input type="text" id="m-teamB" placeholder="Team B">
         </div>
-        <button class="btn" onclick="addMatch()">Schedule Match</button>
+        <button class="btn" onclick="addMatch()">Schedule</button>
       </div>
 
       <div class="card">
         <h2>3. Update Scores</h2>
-        <label>Select Scheduled Match:</label>
         <select id="score-match-select" onchange="loadMatchPlayers()"></select>
-        
         <div id="score-entry-area" class="hidden">
-           <h4>Enter Stats</h4>
-           <p>Select Player and enter stats. Click 'Add' to queue, then 'Submit All' to save.</p>
+           <br><label>Add Player Stats:</label>
            <select id="score-player-select"></select>
            <div style="display:flex; gap:5px">
              <input type="number" id="s-runs" placeholder="Runs">
-             <input type="number" id="s-wkt" placeholder="Wickets">
-             <input type="number" id="s-ovr" placeholder="Overs">
+             <input type="number" id="s-wkt" placeholder="Wkts">
            </div>
-           <button class="btn btn-accent" onclick="queueStat()">+ Add Player Stat</button>
-           
+           <button class="btn" style="background:#555;" onclick="queueStat()">+ Add Stat</button>
            <div id="stat-queue" style="margin: 10px 0; padding: 10px; background: #eee;"></div>
-           
-           <input type="text" id="s-winner" placeholder="Winning Team Name">
-           <button class="btn" onclick="submitMatchStats()">Submit Final Result</button>
+           <input type="text" id="s-winner" placeholder="Winner Name">
+           <button class="btn" onclick="submitMatchStats()">Submit Result</button>
         </div>
       </div>
-      
     </div>
   </div>
 
 </div>
 
 <script>
-  // --- CONFIG ---
-  // MAKE SURE THIS IS YOUR CORRECT 'script.google.com' URL
-  const API_URL = "https://script.google.com/macros/s/AKfycbz2oMZBNMk5rqWBm1NG8c3f0TruWL_pPhpPrAt0b-kmvFCBZQis8yY0KejlLRbwB7SI/exec"; 
+  // YOUR EXACT URL IS ALREADY HERE:
+  const API_URL = "https://script.google.com/macros/s/AKfycbz2oMZBNMk5rqWBm1NG8c3f0TruWL_pPhpPrAt0b-kmvFCBZQis8yY0KejlLRbwB7SI/exec";
   
   let DB = {}; 
 
-  // --- INIT ---
   window.onload = async () => {
-    await loadData();
+    try {
+        console.log("Fetching...");
+        const res = await fetch(API_URL + "?action=getAllData");
+        const text = await res.text();
+        DB = JSON.parse(text);
+
+        // Render Everything
+        if(DB.announcements) {
+             const anns = DB.announcements.sort((a,b) => b.Priority === "High" ? 1 : -1);
+             document.getElementById('ticker').innerText = anns.map(a => a.Message).join("  |  ");
+        }
+
+        renderHome();
+        renderRankings();
+        populateDropdowns();
+
+    } catch(e) {
+        alert("Error: " + e.message);
+    } finally {
+        // FORCE HIDE LOADER
+        document.getElementById('loader').style.display = 'none'; 
+    }
+
     setInterval(updateCountdown, 1000);
   };
 
-  async function loadData() {
-    try {
-      console.log("Fetching data...");
-      const res = await fetch(API_URL + "?action=getAllData");
-      const text = await res.text();
-      
-      try {
-          DB = JSON.parse(text);
-      } catch (e) {
-          console.error("JSON Parse Error", text);
-          alert("Data Error: The sheet returned invalid data.");
-          return;
-      }
-
-      // 1. SAFE RENDER HOME
-      try { renderHome(); } catch(e) { console.error("Home Render Error:", e); }
-
-      // 2. SAFE RENDER RANKINGS
-      try { renderRankings(); } catch(e) { console.error("Rank Render Error:", e); }
-
-      // 3. SAFE DROPDOWNS
-      try { populateDropdowns(); } catch(e) { console.error("Dropdown Error:", e); }
-      
-    } catch(e) { 
-        alert("Connection Error: " + e.message);
-    } finally {
-        // --- THE MAGIC FIX: FORCE THE CURTAIN OPEN ---
-        document.getElementById('loader').classList.add('hidden');
-    }
-  }
-
-  // --- RENDER FUNCTIONS ---
+  // --- RENDERERS ---
   function renderHome() {
-    if(!DB.announcements) return;
-    
-    // Ticker
-    const anns = DB.announcements.sort((a,b) => b.Priority === "High" ? 1 : -1);
-    document.getElementById('ticker').innerText = anns.map(a => a.Message).join("  |  ");
-
-    // Matches Table
     const tbody = document.querySelector('#match-list-table tbody');
     tbody.innerHTML = "";
     if(DB.matches) {
         DB.matches.slice(0, 10).forEach(m => {
-           const tourn = DB.tournaments.find(t => t.ID == m.TournamentID);
-           const tName = tourn ? tourn.Name : "Unknown";
+           // Safe Date Format
+           let d = m.Date;
+           if(m.Date && m.Date.includes && m.Date.includes('T')) d = m.Date.split('T')[0];
            
-           // Safe Date
-           let dateStr = m.Date;
-           try { dateStr = new Date(m.Date).toLocaleDateString(); } catch(e) {}
-
+           const tourn = DB.tournaments.find(t => t.ID == m.TournamentID);
            tbody.innerHTML += `<tr>
-             <td>${dateStr}</td>
-             <td>${tName}</td>
-             <td>${m.TeamA} vs ${m.TeamB} <br><small>${m.Stage}</small></td>
+             <td>${d}</td>
+             <td>${tourn ? tourn.Name : 'Unk'}</td>
+             <td>${m.TeamA} vs ${m.TeamB}<br><small>${m.Stage}</small></td>
              <td>${m.Winner || "-"}</td>
            </tr>`;
         });
-    }
-
-    // Countdown
-    if(DB.matches) {
-        const futureMatch = DB.matches.find(m => new Date(m.Date) > new Date());
-        if(futureMatch) {
-           window.nextMatchDate = new Date(futureMatch.Date);
-           document.getElementById('next-match-info').innerText = `${futureMatch.TeamA} vs ${futureMatch.TeamB} (${futureMatch.Stage})`;
+        
+        // Countdown
+        const future = DB.matches.find(m => new Date(m.Date) > new Date());
+        if(future) {
+            window.nextMatchDate = new Date(future.Date);
+            document.getElementById('next-match-info').innerText = `${future.TeamA} vs ${future.TeamB}`;
         } else {
-           document.getElementById('next-match-info').innerText = "No upcoming matches scheduled.";
-           document.getElementById('countdown').innerText = "--:--:--";
+            document.getElementById('next-match-info').innerText = "No upcoming matches.";
         }
     }
   }
 
   function updateCountdown() {
     if(!window.nextMatchDate) return;
-    const now = new Date();
-    const diff = window.nextMatchDate - now;
+    const diff = window.nextMatchDate - new Date();
     if(diff < 0) return;
-    
     const d = Math.floor(diff / (1000 * 60 * 60 * 24));
     const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
     document.getElementById('countdown').innerText = `${d}d ${h}h`;
@@ -258,80 +226,66 @@
     if(!DB.stats) return;
     const sFilter = document.getElementById('rank-filter-season').value;
     const tFilter = document.getElementById('rank-filter-tourn').value;
-    
-    let playerStats = {}; 
+    let stats = {};
 
-    DB.stats.forEach(stat => {
-        const match = DB.matches.find(m => m.MatchID == stat.MatchID);
-        if(!match) return;
-        const tourn = DB.tournaments.find(t => t.ID == match.TournamentID);
+    DB.stats.forEach(s => {
+        const m = DB.matches.find(x => x.MatchID == s.MatchID);
+        if(!m) return;
+        const t = DB.tournaments.find(x => x.ID == m.TournamentID);
         
-        // Safe check for filters
-        if (sFilter !== "All" && tourn && tourn.Season != sFilter) return;
-        if (tFilter !== "All" && tourn && tourn.ID != tFilter) return;
+        if(sFilter !== "All" && t.Season != sFilter) return;
+        if(tFilter !== "All" && t.ID != tFilter) return;
 
-        if (!playerStats[stat.PlayerID]) {
-            const pInfo = DB.players.find(p => p.ID == stat.PlayerID);
-            playerStats[stat.PlayerID] = { name: pInfo ? pInfo.Name : "Unknown", runs: 0, wickets: 0 };
-        }
-        playerStats[stat.PlayerID].runs += Number(stat.Runs);
-        playerStats[stat.PlayerID].wickets += Number(stat.Wickets);
+        if(!stats[s.PlayerID]) stats[s.PlayerID] = {name: "", runs:0, wkts:0};
+        const p = DB.players.find(x => x.ID == s.PlayerID);
+        stats[s.PlayerID].name = p ? p.Name : "Unknown";
+        stats[s.PlayerID].runs += Number(s.Runs);
+        stats[s.PlayerID].wkts += Number(s.Wickets);
     });
 
     const tbody = document.querySelector('#rankings-table tbody');
     tbody.innerHTML = "";
-    Object.values(playerStats)
-      .sort((a,b) => b.runs - a.runs)
-      .forEach((p, i) => {
-        tbody.innerHTML += `<tr><td>${i+1}</td><td>${p.name}</td><td>${p.runs}</td><td>${p.wickets}</td></tr>`;
-      });
+    Object.values(stats).sort((a,b) => b.runs - a.runs).forEach((p,i) => {
+        tbody.innerHTML += `<tr><td>${i+1}</td><td>${p.name}</td><td>${p.runs}</td><td>${p.wkts}</td></tr>`;
+    });
   }
 
-  // --- ADMIN FUNCTIONS ---
-  function verifyAdmin() {
-    if(document.getElementById('admin-pass-input').value === "9908") {
-       document.getElementById('admin-login').classList.add('hidden');
-       document.getElementById('admin-dash').classList.remove('hidden');
-    } else { alert("Wrong Password"); }
-  }
-
+  // --- ACTIONS ---
   function nav(id) {
     document.querySelectorAll('.view').forEach(d => d.classList.add('hidden'));
     document.getElementById(id).classList.remove('hidden');
   }
 
-  function populateDropdowns() {
-    const tSelect = document.getElementById('m-tourn-select');
-    const fSelect = document.getElementById('rank-filter-tourn');
-    if(!DB.tournaments) return;
+  function val(id) { return document.getElementById(id).value; }
 
-    tSelect.innerHTML = ""; fSelect.innerHTML = "<option value='All'>All Tournaments</option>";
-    
-    DB.tournaments.forEach(t => {
-      let opt = `<option value="${t.ID}">${t.Name} (${t.Season})</option>`;
-      tSelect.innerHTML += opt;
-      fSelect.innerHTML += opt;
-    });
-
-    const mSelect = document.getElementById('score-match-select');
-    mSelect.innerHTML = "<option>Select Match...</option>";
-    if(DB.matches) {
-        DB.matches.filter(m => m.Status !== "Completed").forEach(m => {
-           mSelect.innerHTML += `<option value="${m.MatchID}">${m.TeamA} vs ${m.TeamB} (${m.Stage})</option>`;
-        });
-    }
-    
-    const pSelect = document.getElementById('score-player-select');
-    pSelect.innerHTML = "";
-    if(DB.players) {
-        DB.players.forEach(p => {
-           pSelect.innerHTML += `<option value="${p.ID}">${p.Name}</option>`;
-        });
-    }
+  function verifyAdmin() {
+    if(val('admin-pass-input') === "9908") {
+       document.getElementById('admin-login').classList.add('hidden');
+       document.getElementById('admin-dash').classList.remove('hidden');
+    } else { alert("Wrong Password"); }
   }
 
-  // --- API ---
-  function val(id) { return document.getElementById(id).value; }
+  function populateDropdowns() {
+    const ts = document.getElementById('m-tourn-select');
+    const fs = document.getElementById('rank-filter-tourn');
+    ts.innerHTML = ""; fs.innerHTML = "<option value='All'>All</option>";
+    if(DB.tournaments) {
+        DB.tournaments.forEach(t => {
+            const opt = `<option value="${t.ID}">${t.Name}</option>`;
+            ts.innerHTML += opt; fs.innerHTML += opt;
+        });
+    }
+
+    const ps = document.getElementById('score-player-select');
+    ps.innerHTML = "";
+    if(DB.players) DB.players.forEach(p => ps.innerHTML += `<option value="${p.ID}">${p.Name}</option>`);
+    
+    const ms = document.getElementById('score-match-select');
+    ms.innerHTML = "<option>Select Match...</option>";
+    if(DB.matches) DB.matches.filter(m => m.Status !== "Completed").forEach(m => 
+        ms.innerHTML += `<option value="${m.MatchID}">${m.TeamA} vs ${m.TeamB}</option>`
+    );
+  }
 
   let statQueue = [];
   function loadMatchPlayers() {
@@ -341,11 +295,11 @@
   }
 
   function queueStat() {
-     const pSelect = document.getElementById('score-player-select');
-     const pName = pSelect.options[pSelect.selectedIndex].text;
-     const stat = { id: pSelect.value, runs: val('s-runs'), wickets: val('s-wkt'), overs: val('s-ovr'), catches: 0 };
+     const ps = document.getElementById('score-player-select');
+     const name = ps.options[ps.selectedIndex].text;
+     const stat = {id: ps.value, runs: val('s-runs'), wickets: val('s-wkt'), overs:0, catches:0};
      statQueue.push(stat);
-     document.getElementById('stat-queue').innerHTML += `<div>${pName}: ${stat.runs} runs, ${stat.wickets} wkts</div>`;
+     document.getElementById('stat-queue').innerHTML += `<div>${name}: ${stat.runs}R, ${stat.wickets}W</div>`;
   }
 
   function addMatch() {
@@ -359,10 +313,10 @@
   function api(action, payload) {
      payload.action = action;
      payload.password = "9908";
-     document.getElementById('loader').classList.remove('hidden');
+     document.getElementById('loader').style.display = 'flex'; // Show loader
      fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) })
-     .then(() => { alert("Success! Refreshing..."); location.reload(); });
+     .then(() => { alert("Saved!"); location.reload(); });
   }
-</script>  
+</script>
 </body>
 </html>
