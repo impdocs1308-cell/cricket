@@ -3,389 +3,471 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cricket Pro Manager</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>Cricket Nexus | Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
+            --primary: #6366f1; /* Indigo */
+            --primary-light: #e0e7ff;
+            --accent: #10b981; /* Emerald */
+            --danger: #f43f5e; /* Rose */
             --bg: #f8fafc;
             --surface: #ffffff;
-            --primary: #4f46e5; /* Indigo */
-            --primary-dark: #3730a3;
-            --text-main: #1e293b; /* Deep Slate */
-            --text-muted: #64748b;
-            --accent: #10b981; /* Emerald */
+            --text: #1e293b;
+            --text-light: #64748b;
             --border: #e2e8f0;
-            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --radius: 16px;
+            --shadow: 0 10px 15px -3px rgba(0,0,0,0.05);
         }
 
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
-            background: var(--bg); color: var(--text-main); 
-            margin: 0; padding-bottom: 60px;
+            font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); 
+            margin: 0; line-height: 1.5; overflow-x: hidden;
         }
 
         .hidden { display: none !important; }
 
         /* Navigation */
-        .navbar { 
-            background: var(--surface); border-bottom: 1px solid var(--border);
+        nav {
+            background: rgba(255,255,255,0.8); backdrop-filter: blur(12px);
             position: sticky; top: 0; z-index: 1000; padding: 12px 20px;
-            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;
         }
-        .logo { font-weight: 800; font-size: 1.2rem; color: var(--primary); }
-        .nav-links { display: flex; gap: 15px; }
-        .nav-btn { cursor: pointer; font-weight: 600; font-size: 0.9rem; color: var(--text-muted); border: none; background: none; }
-        .nav-btn.active { color: var(--primary); }
+        .logo { font-weight: 800; font-size: 1.4rem; color: var(--primary); letter-spacing: -1px; }
+        .nav-items { display: flex; gap: 8px; }
+        .nav-btn { 
+            padding: 8px 16px; border-radius: 12px; font-weight: 600; cursor: pointer;
+            border: none; background: transparent; color: var(--text-light); transition: 0.3s;
+        }
+        .nav-btn.active { background: var(--primary-light); color: var(--primary); }
 
         /* Ticker */
-        .ticker { background: var(--primary); color: white; padding: 8px 0; overflow: hidden; white-space: nowrap; }
-        .ticker-inner { display: inline-block; animation: scroll 30s linear infinite; }
-        @keyframes scroll { 100% { transform: translateX(-100%); } }
+        .ticker { background: var(--primary); color: white; padding: 10px; font-size: 0.9rem; overflow: hidden; white-space: nowrap; }
+        .ticker-move { display: inline-block; animation: ticker 30s linear infinite; }
+        @keyframes ticker { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
 
-        /* Container & Cards */
-        .container { max-width: 800px; margin: 20px auto; padding: 0 15px; }
+        /* Layout */
+        .container { max-width: 900px; margin: 24px auto; padding: 0 20px; }
         .card { 
-            background: var(--surface); border-radius: 16px; padding: 20px; 
-            margin-bottom: 20px; border: 1px solid var(--border); box-shadow: var(--shadow);
-        }
-        h2 { font-size: 1.1rem; margin-top: 0; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
-
-        /* Components */
-        .btn { 
-            background: var(--primary); color: white; border: none; padding: 12px 20px; 
-            border-radius: 10px; font-weight: 600; cursor: pointer; width: 100%; transition: 0.2s;
-        }
-        .btn:hover { background: var(--primary-dark); }
-        .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-main); }
-        
-        input, select { 
-            width: 100%; padding: 12px; margin: 8px 0; border: 1px solid var(--border);
-            border-radius: 10px; box-sizing: border-box; font-family: inherit;
+            background: var(--surface); border-radius: var(--radius); padding: 24px; 
+            box-shadow: var(--shadow); border: 1px solid var(--border); margin-bottom: 24px;
         }
 
-        /* Countdown Card */
+        /* Hero Next Match */
         .hero { 
-            background: linear-gradient(135deg, #4f46e5, #818cf8); color: white; 
-            text-align: center; padding: 30px; border-radius: 20px;
+            background: linear-gradient(135deg, #6366f1, #a855f7); color: white;
+            text-align: center; position: relative; overflow: hidden;
         }
-        #cd-timer { font-size: 2.5rem; font-weight: 800; margin: 10px 0; }
+        .hero h3 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; opacity: 0.8; margin: 0;}
+        .hero #next-match-teams { font-size: 1.8rem; font-weight: 800; margin: 15px 0; }
+        .hero #timer { font-size: 2.5rem; font-weight: 800; font-variant-numeric: tabular-nums; }
 
-        /* Table Style */
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th { text-align: left; font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); padding: 10px; border-bottom: 1px solid var(--border); }
-        td { padding: 12px 10px; font-size: 0.9rem; border-bottom: 1px solid var(--border); }
+        /* Buttons & Inputs */
+        .btn {
+            background: var(--primary); color: white; border: none; padding: 12px 24px;
+            border-radius: 12px; font-weight: 600; cursor: pointer; width: 100%; transition: 0.2s;
+        }
+        .btn:active { transform: scale(0.98); }
+        .btn-red { background: var(--danger); }
+        .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
+        
+        input, select {
+            width: 100%; padding: 12px; margin: 8px 0; border: 1px solid var(--border);
+            border-radius: 12px; background: #f1f5f9; font-family: inherit; font-size: 1rem;
+        }
 
-        .badge { padding: 4px 8px; border-radius: 6px; font-size: 0.7rem; font-weight: 700; background: #f1f5f9; }
+        /* Match Grid */
+        .match-row {
+            padding: 16px; border-radius: 14px; border: 1px solid var(--border);
+            margin-bottom: 12px; cursor: pointer; transition: 0.2s;
+        }
+        .match-row:hover { border-color: var(--primary); background: var(--primary-light); }
+        .match-meta { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-light); font-weight: 600; margin-bottom: 8px; }
+        .match-teams { display: flex; justify-content: space-between; align-items: center; font-weight: 700; }
+        .match-winner { font-size: 0.8rem; color: var(--accent); margin-top: 8px; font-weight: 600; }
 
-        /* Responsive Grid */
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        /* Stats Table */
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th { text-align: left; padding: 12px; font-size: 0.8rem; color: var(--text-light); border-bottom: 1px solid var(--border); }
+        td { padding: 14px 12px; border-bottom: 1px solid var(--border); font-size: 0.95rem; }
 
-        #loader { position: fixed; inset: 0; background: white; z-index: 9999; display: flex; justify-content: center; align-items: center; }
-        .spinner { width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; }
+        /* Modals */
+        .modal-overlay { 
+            position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); 
+            backdrop-filter: blur(4px); z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 20px;
+        }
+        .modal { background: white; width: 100%; max-width: 550px; border-radius: 24px; padding: 30px; position: relative; max-height: 90vh; overflow-y: auto; }
+        .close-btn { position: absolute; top: 20px; right: 20px; font-size: 1.5rem; cursor: pointer; color: var(--text-light); }
+
+        /* Admin Tabs */
+        .admin-tabs { display: flex; gap: 5px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 5px; }
+        .tab-btn { padding: 6px 12px; border-radius: 8px; background: #eee; font-size: 0.8rem; border: none; cursor: pointer; white-space: nowrap; }
+        .tab-btn.active { background: var(--primary); color: white; }
+
+        #loader { position: fixed; inset: 0; background: white; z-index: 3000; display: flex; justify-content: center; align-items: center; }
+        .spinner { width: 40px; height: 40px; border: 4px solid var(--primary-light); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
+
     </style>
 </head>
 <body>
 
 <div id="loader"><div class="spinner"></div></div>
 
-<div class="navbar">
-    <div class="logo">CRICKET<span style="color:var(--text-muted)">PRO</span></div>
-    <div class="nav-links">
-        <button class="nav-btn active" onclick="showView('home')">Home</button>
-        <button class="nav-btn" onclick="showView('rankings')">Stats</button>
-        <button class="nav-btn" onclick="checkAuth()">Admin</button>
+<nav>
+    <div class="logo">CRICKET<span style="font-weight:300">NEXUS</span></div>
+    <div class="nav-items">
+        <div class="nav-btn active" onclick="showPage('home')" id="nb-home">Home</div>
+        <div class="nav-btn" onclick="showPage('stats')" id="nb-stats">Stats</div>
+        <div class="nav-btn" onclick="openAdmin()" id="nb-admin">Admin</div>
     </div>
-</div>
+</nav>
 
-<div class="ticker" id="ticker-box">
-    <div class="ticker-inner" id="ticker-text">Welcome to the Tournament! Stay tuned for live updates.</div>
-</div>
+<div class="ticker"><div class="ticker-move" id="ticker-content">Loading announcements...</div></div>
 
 <div class="container">
     
-    <!-- HOME VIEW -->
-    <div id="v-home" class="view">
-        <div class="hero card">
-            <div id="next-match-label" style="opacity: 0.9; font-size: 0.9rem;">NEXT MATCH COUNTDOWN</div>
-            <div id="cd-teams" style="font-weight: 700; font-size: 1.2rem; margin-top:5px;">Loading...</div>
-            <div id="cd-timer">00:00:00</div>
-            <div id="cd-date" style="font-size: 0.8rem; opacity: 0.8;"></div>
+    <!-- HOME PAGE -->
+    <div id="page-home" class="view">
+        <div class="card hero">
+            <h3>Coming Up Next</h3>
+            <div id="next-match-teams">No Upcoming Matches</div>
+            <div id="timer">00d 00h 00m</div>
         </div>
 
         <div class="card">
-            <h2>Recent Matches</h2>
-            <div id="recent-matches"></div>
+            <h2 style="margin-top:0">Match Schedule</h2>
+            <div id="match-list"></div>
         </div>
     </div>
 
-    <!-- RANKINGS VIEW -->
-    <div id="v-rankings" class="view hidden">
+    <!-- STATS PAGE -->
+    <div id="page-stats" class="view hidden">
         <div class="card">
             <h2>Leaderboards</h2>
-            <div class="grid">
-                <select id="filt-season" onchange="renderRankings()"><option value="All">All Seasons</option></select>
-                <select id="filt-tourn" onchange="renderRankings()"><option value="All">All Tournaments</option></select>
+            <div style="display:flex; gap:10px; margin-bottom:20px;">
+                <select id="filt-trn" onchange="renderStats()"><option value="All">All Tournaments</option></select>
+                <select id="filt-type" onchange="renderStats()">
+                    <option value="bat">Batting (Runs)</option>
+                    <option value="bowl">Bowling (Wkts)</option>
+                    <option value="team">Teams (Wins)</option>
+                </select>
             </div>
-            
-            <div style="display:flex; gap:10px; margin-top:15px;">
-                <button class="btn btn-outline" onclick="setRankTab('bat')">Batting</button>
-                <button class="btn btn-outline" onclick="setRankTab('bowl')">Bowling</button>
-                <button class="btn btn-outline" onclick="setRankTab('team')">Teams</button>
-            </div>
-
-            <div id="rank-content" style="margin-top:20px;"></div>
+            <div id="stats-render"></div>
         </div>
     </div>
 
-    <!-- ADMIN VIEW -->
-    <div id="v-admin" class="view hidden">
+    <!-- ADMIN PAGE -->
+    <div id="page-admin" class="view hidden">
         <div class="card">
-            <div style="display:flex; justify-content:space-between;">
-                <h2>Admin Panel</h2>
-                <button onclick="logout()" class="nav-btn">Logout</button>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                <h2 style="margin:0">Admin Console</h2>
+                <button class="tab-btn" style="background:var(--danger); color:white" onclick="logout()">Logout</button>
             </div>
             
-            <!-- Announcements -->
-            <div style="border-top: 1px solid var(--border); padding-top:15px; margin-top:15px;">
-                <h3>Announcements</h3>
-                <input type="text" id="ann-msg" placeholder="Message">
-                <button class="btn btn-outline" onclick="addAnn()">Broadcast</button>
+            <div class="admin-tabs">
+                <button class="tab-btn active" onclick="setAdminTab('trn', this)">Tournaments</button>
+                <button class="tab-btn" onclick="setAdminTab('ply', this)">Players</button>
+                <button class="tab-btn" onclick="setAdminTab('mat', this)">Matches</button>
+                <button class="tab-btn" onclick="setAdminTab('scr', this)">Scoring</button>
+                <button class="tab-btn" onclick="setAdminTab('ann', this)">Alerts</button>
             </div>
 
-            <!-- Tournaments -->
-            <div style="border-top: 1px solid var(--border); padding-top:15px; margin-top:15px;">
-                <h3>Add Tournament</h3>
-                <div class="grid">
-                    <input type="text" id="trn-name" placeholder="Tournament Name">
-                    <input type="text" id="trn-season" placeholder="Season (e.g. 2024)">
+            <!-- Tab: Tournaments -->
+            <div id="adm-trn" class="adm-section">
+                <div class="grid" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                    <input id="ad-trn-name" placeholder="Tournament Name">
+                    <input id="ad-trn-seas" placeholder="Season (e.g. 2024)">
                 </div>
-                <button class="btn btn-outline" onclick="addTrn()">Create Tournament</button>
+                <button class="btn" onclick="saveTrn()">Save Tournament</button>
+                <div id="list-trn" style="margin-top:20px"></div>
             </div>
 
-            <!-- Players -->
-            <div style="border-top: 1px solid var(--border); padding-top:15px; margin-top:15px;">
-                <h3>Add Player</h3>
-                <div class="grid">
-                    <input type="text" id="ply-name" placeholder="Name">
-                    <input type="password" id="ply-pass" placeholder="Password">
+            <!-- Tab: Players -->
+            <div id="adm-ply" class="adm-section hidden">
+                <div class="grid" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                    <input id="ad-ply-name" placeholder="Player Name">
+                    <input id="ad-ply-pass" placeholder="Password">
                 </div>
-                <button class="btn btn-outline" onclick="addPly()">Add Player</button>
+                <button class="btn" onclick="savePly()">Add Player</button>
+                <div id="list-ply" style="margin-top:20px"></div>
             </div>
 
-            <!-- Match Create -->
-            <div style="border-top: 1px solid var(--border); padding-top:15px; margin-top:15px;">
-                <h3>Schedule Match</h3>
-                <select id="mat-trn"></select>
-                <input type="text" id="mat-stage" placeholder="Stage (e.g. Semi Final 1)">
-                <div class="grid">
-                    <input type="text" id="mat-ta" placeholder="Team A">
-                    <input type="text" id="mat-tb" placeholder="Team B">
+            <!-- Tab: Matches -->
+            <div id="adm-mat" class="adm-section hidden">
+                <select id="ad-mat-trn"></select>
+                <input id="ad-mat-stage" placeholder="Stage (e.g. Final, League)">
+                <input id="ad-mat-date" type="datetime-local">
+                <div class="grid" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                    <input id="ad-mat-ta" placeholder="Team A">
+                    <input id="ad-mat-tb" placeholder="Team B">
                 </div>
-                <input type="datetime-local" id="mat-date">
-                <button class="btn btn-outline" onclick="addMatch()">Schedule</button>
+                <button class="btn" onclick="saveMatch()">Schedule Match</button>
+                <div id="list-mat" style="margin-top:20px"></div>
             </div>
 
-            <!-- Scoring -->
-            <div style="border-top: 1px solid var(--border); padding-top:15px; margin-top:15px;">
-                <h3>Post Score</h3>
-                <select id="score-match" onchange="loadMatchForm()"></select>
-                <div id="score-form" class="hidden">
-                    <div class="grid">
-                        <select id="score-ply"></select>
-                        <select id="score-team"></select>
+            <!-- Tab: Scoring -->
+            <div id="adm-scr" class="adm-section hidden">
+                <select id="ad-scr-mat" onchange="prepScoring()"></select>
+                <div id="scr-form" class="hidden" style="background:#f8fafc; padding:15px; border-radius:12px; margin-top:15px;">
+                    <h4 style="margin:0 0 10px 0">Add Performance</h4>
+                    <select id="ad-scr-ply"></select>
+                    <select id="ad-scr-tm"></select>
+                    <div class="grid" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                        <input id="ad-scr-r" type="number" placeholder="Runs">
+                        <input id="ad-scr-w" type="number" placeholder="Wickets">
                     </div>
-                    <div class="grid">
-                        <input type="number" id="score-runs" placeholder="Runs">
-                        <input type="number" id="score-wkts" placeholder="Wickets">
-                    </div>
-                    <button class="btn" onclick="addStat()">+ Add Player Performance</button>
+                    <button class="btn btn-outline" onclick="saveStat()">Add Stat</button>
                     <hr>
-                    <input type="text" id="score-winner" placeholder="Match Winner Team Name">
-                    <button class="btn" style="background:var(--accent)" onclick="finalizeMatch()">Finalize Match</button>
+                    <input id="ad-scr-win" placeholder="Winner Team Name">
+                    <button class="btn" onclick="finalizeMatch()">Finalize Match</button>
                 </div>
+            </div>
+
+            <!-- Tab: Announcements -->
+            <div id="adm-ann" class="adm-section hidden">
+                <input id="ad-ann-msg" placeholder="Announcement Message">
+                <button class="btn" onclick="saveAnn()">Push Announcement</button>
+                <div id="list-ann" style="margin-top:20px"></div>
             </div>
         </div>
     </div>
+</div>
 
+<!-- MATCH DETAIL MODAL -->
+<div id="mod-match" class="modal-overlay hidden">
+    <div class="modal">
+        <span class="close-btn" onclick="closeMod('mod-match')">&times;</span>
+        <div id="mm-header" style="text-align:center">
+            <div id="mm-stage" style="color:var(--primary); font-weight:700; font-size:0.8rem; text-transform:uppercase"></div>
+            <h2 id="mm-title" style="margin:10px 0"></h2>
+            <div id="mm-status" style="font-weight:600; color:var(--accent)"></div>
+        </div>
+        <div id="mm-stats-box" style="margin-top:20px"></div>
+    </div>
 </div>
 
 <script>
-    const API = "https://script.google.com/macros/s/AKfycbz8f8eKo4hMuqvXd2nTCbANMvgsH7ZM0pT88g0jVPV1upsiN96jnUN4joJHT_Rf67YT/exec"; 
-    const PASS = "9908";
-    let DB = {};
-    let currentRankTab = 'bat';
+const API = "https://script.google.com/macros/s/AKfycbzR9cnNW8dMGiwiRDGE_RYV-ZQJAVs7GFlAV2c1pb5bAq3uNMgP3VaxMZ6EOIoNAXVb/exec";
+const PIN = "9908";
+let DB = { tournaments:[], players:[], matches:[], stats:[], announcements:[] };
 
-    window.onload = () => loadData();
+window.onload = () => {
+    loadData();
+    setInterval(updateTimer, 1000);
+};
 
-    async function loadData() {
-        try {
-            const res = await fetch(API + "?action=getAllData");
-            DB = await res.json();
-            render();
-            document.getElementById('loader').classList.add('hidden');
-        } catch (e) { alert("Data load failed. Check Console."); }
-    }
+async function loadData() {
+    try {
+        const r = await fetch(API + "?action=getAllData");
+        DB = await r.json();
+        renderUI();
+        document.getElementById('loader').classList.add('hidden');
+    } catch(e) { console.error(e); }
+}
 
-    function render() {
-        // Ticker
-        if(DB.announcements.length > 0) {
-            document.getElementById('ticker-text').innerText = DB.announcements.map(a => a.Message).join(" • ");
-        }
+function renderUI() {
+    // Ticker
+    const ticker = document.getElementById('ticker-content');
+    ticker.innerText = DB.announcements.length ? DB.announcements.map(a => a.Message).join(" • ") : "Welcome to Cricket Nexus!";
 
-        // Home View
-        renderHome();
-        
-        // Populate Drops
-        fillSelect('filt-season', [...new Set(DB.tournaments.map(t => t.Season))], true);
-        fillSelect('filt-tourn', DB.tournaments.map(t => ({id: t.ID, name: t.Name})), true);
-        fillSelect('mat-trn', DB.tournaments.map(t => ({id: t.ID, name: t.Name})));
-        fillSelect('score-match', DB.matches.filter(m => m.Status !== 'Completed').map(m => ({id: m.MatchID, name: `${m.TeamA} vs ${m.TeamB}`})), false, "Select Match");
-        fillSelect('score-ply', DB.players.map(p => ({id: p.ID, name: p.Name})));
-
-        renderRankings();
-    }
-
-    function renderHome() {
-        const now = new Date();
-        const future = DB.matches
-            .filter(m => new Date(m.Date) > now)
-            .sort((a,b) => new Date(a.Date) - new Date(b.Date));
-
-        if(future.length > 0) {
-            const next = future[0];
-            document.getElementById('cd-teams').innerText = `${next.TeamA} vs ${next.TeamB}`;
-            document.getElementById('cd-date').innerText = new Date(next.Date).toLocaleString();
-            startCountdown(next.Date);
-        }
-
-        const recent = document.getElementById('recent-matches');
-        recent.innerHTML = DB.matches.slice(-5).reverse().map(m => `
-            <div style="padding:10px; border-bottom:1px solid #eee;">
-                <div style="font-size:0.7rem; color:var(--text-muted)">${m.Stage} • ${new Date(m.Date).toLocaleDateString()}</div>
-                <div style="display:flex; justify-content:space-between; font-weight:600;">
-                    <span>${m.TeamA} vs ${m.TeamB}</span>
-                    <span style="color:var(--accent)">${m.Winner ? m.Winner + ' won' : 'Scheduled'}</span>
-                </div>
+    // Home - Match List
+    const list = document.getElementById('match-list');
+    list.innerHTML = "";
+    DB.matches.sort((a,b) => new Date(b.Date) - new Date(a.Date)).forEach(m => {
+        list.innerHTML += `
+        <div class="match-row" onclick="viewMatchDetail('${m.MatchID}')">
+            <div class="match-meta">
+                <span>${m.Stage}</span>
+                <span>${new Date(m.Date).toLocaleDateString()}</span>
             </div>
-        `).join('');
+            <div class="match-teams">
+                <span>${m.TeamA}</span>
+                <span style="color:var(--border)">VS</span>
+                <span>${m.TeamB}</span>
+            </div>
+            <div class="match-winner">${m.Winner ? 'Winner: ' + m.Winner : 'Upcoming'}</div>
+        </div>`;
+    });
+
+    // Home - Next Match
+    const next = DB.matches.filter(m => new Date(m.Date) > new Date()).sort((a,b) => new Date(a.Date) - new Date(b.Date))[0];
+    if(next) {
+        document.getElementById('next-match-teams').innerText = `${next.TeamA} vs ${next.TeamB}`;
+        window.nextMatchTime = new Date(next.Date).getTime();
     }
 
-    function renderRankings() {
-        const sFilter = document.getElementById('filt-season').value;
-        const tFilter = document.getElementById('filt-tourn').value;
-        const content = document.getElementById('rank-content');
+    renderStats();
+    fillSelects();
+    renderAdminLists();
+}
 
-        // Filter valid matches
-        let validMatches = DB.matches;
-        if(tFilter !== 'All') validMatches = validMatches.filter(m => m.TournamentID == tFilter);
-        if(sFilter !== 'All') {
-            const allowedTrns = DB.tournaments.filter(t => t.Season == sFilter).map(t => t.ID);
-            validMatches = validMatches.filter(m => allowedTrns.includes(m.TournamentID));
-        }
-        const matchIds = validMatches.map(m => m.MatchID);
+// NAVIGATION
+function showPage(p) {
+    document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
+    document.getElementById('page-' + p).classList.remove('hidden');
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('nb-' + p).classList.add('active');
+}
 
-        if(currentRankTab === 'bat' || currentRankTab === 'bowl') {
-            const stats = {};
-            DB.stats.filter(s => matchIds.includes(s.MatchID)).forEach(s => {
-                if(!stats[s.PlayerID]) stats[s.PlayerID] = { name: (DB.players.find(p => p.ID == s.PlayerID)?.Name || 'Unknown'), r: 0, w: 0 };
-                stats[s.PlayerID].r += parseInt(s.Runs || 0);
-                stats[s.PlayerID].w += parseInt(s.Wickets || 0);
-            });
+function setAdminTab(t, btn) {
+    document.querySelectorAll('.adm-section').forEach(s => s.classList.add('hidden'));
+    document.getElementById('adm-' + t).classList.remove('hidden');
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+}
 
-            const sorted = Object.values(stats).sort((a,b) => currentRankTab === 'bat' ? b.r - a.r : b.w - a.w);
-            content.innerHTML = `<table><tr><th>Player</th><th>${currentRankTab === 'bat' ? 'Runs' : 'Wickets'}</th></tr>
-                ${sorted.map(p => `<tr><td>${p.name}</td><td>${currentRankTab === 'bat' ? p.r : p.w}</td></tr>`).join('')}</table>`;
-        } else {
-            const teams = {};
-            validMatches.filter(m => m.Status === 'Completed').forEach(m => {
-                if(!teams[m.TeamA]) teams[m.TeamA] = {w:0};
-                if(!teams[m.TeamB]) teams[m.TeamB] = {w:0};
-                if(m.Winner) teams[m.Winner].w++;
-            });
-            const sorted = Object.keys(teams).sort((a,b) => teams[b].w - teams[a].w);
-            content.innerHTML = `<table><tr><th>Team</th><th>Wins</th></tr>
-                ${sorted.map(t => `<tr><td>${t}</td><td>${teams[t].w}</td></tr>`).join('')}</table>`;
-        }
-    }
-
-    // Handlers
-    function showView(id) {
-        document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
-        document.getElementById('v-' + id).classList.remove('hidden');
-        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-    }
-
-    function setRankTab(t) { currentRankTab = t; renderRankings(); }
-
-    function startCountdown(date) {
-        const target = new Date(date).getTime();
-        const timer = setInterval(() => {
-            const now = new Date().getTime();
-            const dist = target - now;
-            if(dist < 0) { clearInterval(timer); document.getElementById('cd-timer').innerText = "LIVE"; return; }
-            const h = Math.floor(dist / 3600000);
-            const m = Math.floor((dist % 3600000) / 60000);
-            const s = Math.floor((dist % 60000) / 1000);
-            document.getElementById('cd-timer').innerText = `${h}h ${m}m ${s}s`;
-        }, 1000);
-    }
-
-    // Admin Actions
-    async function api(action, data) {
-        document.getElementById('loader').classList.remove('hidden');
-        data.action = action;
-        data.password = PASS;
-        await fetch(API, { method: 'POST', body: JSON.stringify(data) });
-        loadData();
-    }
-
-    function addAnn() { api('addAnn', { id: 'AN'+Date.now(), message: val('ann-msg'), priority: 1, date: new Date() }); }
-    function addTrn() { api('addTrn', { id: 'TR'+Date.now(), name: val('trn-name'), season: val('trn-season') }); }
-    function addPly() { api('addPlayer', { id: 'P'+Date.now(), name: val('ply-name'), pass: val('ply-pass'), role: 'Player', team: 'TBD' }); }
-    function addMatch() { 
-        api('addMatch', { 
-            id: 'M'+Date.now(), trnId: val('mat-trn'), stage: val('mat-stage'), 
-            teamA: val('mat-ta'), teamB: val('mat-tb'), date: val('mat-date') 
-        }); 
-    }
+// STATS CALCULATION
+function renderStats() {
+    const trn = document.getElementById('filt-trn').value;
+    const type = document.getElementById('filt-type').value;
+    const div = document.getElementById('stats-render');
     
-    function loadMatchForm() {
-        const mid = val('score-match');
-        const match = DB.matches.find(m => m.MatchID == mid);
-        if(!match) return;
-        document.getElementById('score-form').classList.remove('hidden');
-        fillSelect('score-team', [match.TeamA, match.TeamB]);
+    let filteredStats = DB.stats;
+    if(trn !== "All") {
+        const mIds = DB.matches.filter(m => m.TournamentID == trn).map(m => m.MatchID);
+        filteredStats = filteredStats.filter(s => mIds.includes(s.MatchID));
     }
 
-    function addStat() {
-        api('addStat', {
-            id: 'ST'+Date.now(), matchId: val('score-match'), playerId: val('score-ply'),
-            team: val('score-team'), runs: val('score-runs'), wickets: val('score-wkts')
+    const report = {};
+    if(type === 'bat' || type === 'bowl') {
+        filteredStats.forEach(s => {
+            if(!report[s.PlayerID]) report[s.PlayerID] = { name: getPlayerName(s.PlayerID), r: 0, w: 0 };
+            report[s.PlayerID].r += parseInt(s.Runs);
+            report[s.PlayerID].w += parseInt(s.Wickets);
         });
+        const arr = Object.values(report).sort((a,b) => type === 'bat' ? b.r - a.r : b.w - a.w);
+        div.innerHTML = `<table><tr><th>Player</th><th>${type==='bat'?'Runs':'Wkts'}</th></tr>
+            ${arr.map(p => `<tr><td>${p.name}</td><td>${type==='bat'?p.r:p.w}</td></tr>`).join('')}</table>`;
+    } else {
+        const tWins = {};
+        DB.matches.filter(m => m.Status === 'Completed').forEach(m => {
+            if(!tWins[m.Winner]) tWins[m.Winner] = 0;
+            tWins[m.Winner]++;
+        });
+        const arr = Object.keys(tWins).sort((a,b) => tWins[b] - tWins[a]);
+        div.innerHTML = `<table><tr><th>Team</th><th>Wins</th></tr>
+            ${arr.map(t => `<tr><td>${t}</td><td>${tWins[t]}</td></tr>`).join('')}</table>`;
     }
+}
 
-    function finalizeMatch() {
-        api('finalizeMatch', { matchId: val('score-match'), winner: val('score-winner') });
-    }
+// MATCH DETAILS
+function viewMatchDetail(id) {
+    const m = DB.matches.find(x => x.MatchID == id);
+    const s = DB.stats.filter(x => x.MatchID == id);
+    document.getElementById('mm-title').innerText = `${m.TeamA} vs ${m.TeamB}`;
+    document.getElementById('mm-stage').innerText = m.Stage;
+    document.getElementById('mm-status').innerText = m.Winner ? `Winner: ${m.Winner}` : 'Scheduled';
+    
+    let h = `<table><tr><th>Player</th><th>Team</th><th>R</th><th>W</th></tr>`;
+    s.forEach(st => {
+        h += `<tr><td>${getPlayerName(st.PlayerID)}</td><td>${st.Team}</td><td>${st.Runs}</td><td>${st.Wickets}</td></tr>`;
+    });
+    h += `</table>`;
+    document.getElementById('mm-stats-box').innerHTML = s.length ? h : "<p style='text-align:center; color:#999'>No data available</p>";
+    document.getElementById('mod-match').classList.remove('hidden');
+}
 
-    // Utils
-    function val(id) { return document.getElementById(id).value; }
-    function fillSelect(id, list, all = false, defText = "") {
+// ADMIN OPS (Reactive)
+async function call(action, data) {
+    // Instant UI update logic (Reactive)
+    if(action === 'savePlayer') DB.players.push({ID: data.id, Name: data.name});
+    if(action === 'saveTrn') DB.tournaments.push({ID: data.id, Name: data.name, Season: data.season});
+    
+    renderUI(); // Re-render UI immediately
+
+    data.action = action;
+    data.password = PIN;
+    try {
+        await fetch(API, { method: 'POST', body: JSON.stringify(data) });
+        // Background sync
+        loadData();
+    } catch(e) { alert("Sync Error"); }
+}
+
+function saveTrn() {
+    call('saveTrn', { id: 'T'+Date.now(), name: val('ad-trn-name'), season: val('ad-trn-seas') });
+}
+function savePly() {
+    call('savePlayer', { id: 'P'+Date.now(), name: val('ad-ply-name'), pass: val('ad-ply-pass') });
+}
+function saveMatch() {
+    call('saveMatch', { 
+        id: 'M'+Date.now(), trnId: val('ad-mat-trn'), stage: val('ad-mat-stage'),
+        teamA: val('ad-mat-ta'), teamB: val('ad-mat-tb'), date: val('ad-mat-date')
+    });
+}
+function saveStat() {
+    call('saveStat', {
+        id: 'S'+Date.now(), matchId: val('ad-scr-mat'), playerId: val('ad-scr-ply'),
+        team: val('ad-scr-tm'), runs: val('ad-scr-r'), wickets: val('ad-scr-w')
+    });
+}
+function finalizeMatch() {
+    const m = DB.matches.find(x => x.MatchID == val('ad-scr-mat'));
+    m.winner = val('ad-scr-win');
+    m.status = 'Completed';
+    call('saveMatch', m);
+}
+function saveAnn() {
+    call('saveAnn', { id: 'A'+Date.now(), message: val('ad-ann-msg'), priority: 'High' });
+}
+
+// HELPERS
+function val(id) { return document.getElementById(id).value; }
+function getPlayerName(id) { return DB.players.find(p => p.ID == id)?.Name || "Unknown"; }
+function closeMod(id) { document.getElementById(id).classList.add('hidden'); }
+function openAdmin() {
+    const p = prompt("Enter Admin PIN:");
+    if(p === PIN) showPage('admin');
+}
+function logout() { showPage('home'); }
+
+function fillSelects() {
+    const f = (id, list, key, text) => {
         const el = document.getElementById(id);
-        el.innerHTML = all ? '<option value="All">All</option>' : (defText ? `<option value="">${defText}</option>` : '');
-        list.forEach(item => {
-            const val = typeof item === 'object' ? item.id : item;
-            const text = typeof item === 'object' ? item.name : item;
-            el.innerHTML += `<option value="${val}">${text}</option>`;
-        });
-    }
-    function checkAuth() {
-        const p = prompt("Admin PIN:");
-        if(p === PASS) showView('admin');
-        else alert("Wrong PIN");
-    }
-    function logout() { showView('home'); }
+        const val = el.value;
+        el.innerHTML = list.map(i => `<option value="${i[key]}">${i[text]}</option>`).join('');
+        if(val) el.value = val;
+    };
+    fillSelectsRaw('filt-trn', DB.tournaments, 'ID', 'Name', true);
+    fillSelectsRaw('ad-mat-trn', DB.tournaments, 'ID', 'Name');
+    fillSelectsRaw('ad-scr-mat', DB.matches.filter(m => m.Status !== 'Completed'), 'MatchID', 'TeamA');
+    fillSelectsRaw('ad-scr-ply', DB.players, 'ID', 'Name');
+}
+
+function fillSelectsRaw(id, list, key, text, all=false) {
+    const el = document.getElementById(id);
+    let h = all ? `<option value="All">All</option>` : '';
+    h += list.map(i => `<option value="${i[key]}">${i[text] || i.TeamA + ' vs ' + i.TeamB}</option>`).join('');
+    el.innerHTML = h;
+}
+
+function prepScoring() {
+    const m = DB.matches.find(x => x.MatchID == val('ad-scr-mat'));
+    if(!m) return;
+    document.getElementById('scr-form').classList.remove('hidden');
+    document.getElementById('ad-scr-tm').innerHTML = `<option value="${m.TeamA}">${m.TeamA}</option><option value="${m.TeamB}">${m.TeamB}</option>`;
+}
+
+function renderAdminLists() {
+    const del = (act, id) => `<button onclick="call('${act}', {id:'${id}'})" class="tab-btn" style="background:var(--danger); color:white; padding:2px 8px">Delete</button>`;
+    
+    document.getElementById('list-trn').innerHTML = DB.tournaments.map(t => `<div style="display:flex; justify-content:space-between; margin-bottom:5px"><span>${t.Name}</span> ${del('delTrn', t.ID)}</div>`).join('');
+    document.getElementById('list-ply').innerHTML = DB.players.map(p => `<div style="display:flex; justify-content:space-between; margin-bottom:5px"><span>${p.Name}</span> ${del('delPlayer', p.ID)}</div>`).join('');
+    document.getElementById('list-ann').innerHTML = DB.announcements.map(a => `<div style="display:flex; justify-content:space-between; margin-bottom:5px"><span style="font-size:0.8rem">${a.Message}</span> ${del('delAnn', a.ID)}</div>`).join('');
+}
+
+function updateTimer() {
+    if(!window.nextMatchTime) return;
+    const diff = window.nextMatchTime - new Date().getTime();
+    if(diff <= 0) { document.getElementById('timer').innerText = "LIVE NOW"; return; }
+    const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    document.getElementById('timer').innerText = `${d}d ${h}h ${m}m`;
+}
 </script>
 </body>
 </html>
