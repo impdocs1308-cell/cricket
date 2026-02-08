@@ -1,341 +1,370 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cricket Club Management</title>
-    <style>
-        /* --- LIGHT THEME & ANIMATIONS --- */
-        :root {
-            --primary: #3498db; /* Bright Blue */
-            --secondary: #e67e22; /* Orange for Highlights */
-            --bg-light: #f4f9ff; /* Very light blueish white */
-            --text-main: #2c3e50; /* Dark Blue Grey - NO BLACK */
-            --text-light: #7f8c8d;
-            --white: #ffffff;
-            --shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cricket Club Manager</title>
+<style>
+  /* --- DESIGN SYSTEM: NO BLACK --- */
+  :root {
+    --primary: #1565C0; /* Deep Blue */
+    --secondary: #00897B; /* Teal */
+    --accent: #FF6F00; /* Amber */
+    --text-dark: #263238; /* Blue Grey (Not Black) */
+    --text-med: #546E7A;
+    --bg-body: #F5F7FA;
+    --bg-card: #FFFFFF;
+    --border: #CFD8DC;
+  }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-light);
-            color: var(--text-main);
-            margin: 0;
-            padding: 0;
-        }
+  body { font-family: 'Segoe UI', Roboto, sans-serif; background: var(--bg-body); color: var(--text-dark); margin: 0; padding-bottom: 50px; }
+  
+  /* --- COMPONENTS --- */
+  .navbar { background: linear-gradient(135deg, var(--primary), #42A5F5); padding: 15px; color: white; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+  .navbar h1 { margin: 0; font-size: 1.2rem; }
+  .nav-links button { background: none; border: none; color: white; font-size: 1rem; margin-left: 15px; cursor: pointer; opacity: 0.9; }
+  .nav-links button:hover { opacity: 1; text-decoration: underline; }
 
-        /* --- LAYOUT --- */
-        header {
-            background: linear-gradient(135deg, #6dd5fa, #2980b9);
-            color: var(--white);
-            padding: 20px;
-            text-align: center;
-            box-shadow: var(--shadow);
-        }
+  .container { max-width: 1000px; margin: 20px auto; padding: 0 15px; }
 
-        nav {
-            display: flex;
-            justify-content: center;
-            background: var(--white);
-            padding: 10px;
-            margin-bottom: 20px;
-        }
+  .card { background: var(--bg-card); border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 20px; border: 1px solid var(--border); }
+  
+  h2 { color: var(--primary); margin-top: 0; border-bottom: 2px solid #E3F2FD; padding-bottom: 10px; }
 
-        nav button {
-            background: transparent;
-            border: none;
-            color: var(--text-main);
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: color 0.3s;
-        }
+  /* --- FORMS --- */
+  input, select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid var(--border); border-radius: 6px; background: #FAFAFA; color: var(--text-dark); box-sizing: border-box; }
+  input:focus, select:focus { border-color: var(--primary); outline: none; }
+  
+  .btn { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; margin-top: 10px; }
+  .btn:hover { background: #0D47A1; }
+  .btn-accent { background: var(--accent); }
 
-        nav button:hover { color: var(--primary); font-weight: bold; }
+  /* --- TABLES --- */
+  table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+  th { background: #E3F2FD; color: var(--primary); padding: 10px; text-align: left; font-weight: 600; }
+  td { padding: 10px; border-bottom: 1px solid #ECEFF1; color: var(--text-med); }
 
-        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
-        
-        /* --- SECTIONS --- */
-        .section { display: none; animation: fadeIn 0.5s ease-in-out; }
-        .section.active { display: block; }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* --- COMPONENTS --- */
-        .card {
-            background: var(--white);
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: var(--shadow);
-            border-left: 5px solid var(--primary);
-        }
-
-        .ticker-wrap {
-            width: 100%;
-            background-color: #dcedc8; /* Light Green */
-            overflow: hidden;
-            height: 40px;
-            line-height: 40px;
-            margin-bottom: 20px;
-            border-radius: 4px;
-        }
-        .ticker { display: inline-block; white-space: nowrap; animation: ticker 20s linear infinite; padding-left: 100%; color: #33691e; font-weight: bold; }
-        @keyframes ticker { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
-
-        table { width: 100%; border-collapse: collapse; background: var(--white); border-radius: 8px; overflow: hidden; }
-        th { background-color: var(--primary); color: var(--white); padding: 12px; text-align: left; }
-        td { padding: 12px; border-bottom: 1px solid #eee; color: var(--text-main); }
-        tr:hover { background-color: #eef7fc; }
-
-        input, select {
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            margin: 5px 0;
-            width: 100%;
-            box-sizing: border-box;
-            background: #fafafa;
-            color: var(--text-main);
-        }
-
-        .btn {
-            background-color: var(--primary);
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-        .btn:hover { background-color: #2980b9; }
-
-        /* --- COUNTDOWN --- */
-        #countdown-box { font-size: 1.5em; text-align: center; color: var(--secondary); font-weight: bold; margin: 20px 0; }
-    </style>
+  /* --- TICKER --- */
+  .marquee { background: var(--secondary); color: white; padding: 10px; overflow: hidden; white-space: nowrap; font-weight: 600; }
+  
+  /* --- LOADING/HIDDEN --- */
+  .hidden { display: none; }
+  .loading-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(255,255,255,0.8); display: flex; justify-content: center; align-items: center; z-index: 999; }
+</style>
 </head>
 <body>
 
-<header>
-    <h1>🏏 Cricket Club Management</h1>
-    <p>Live Scores | Rankings | Official Stats</p>
-</header>
+<div id="loader" class="loading-overlay"><div>Loading Data...</div></div>
 
-<div class="ticker-wrap">
-    <div class="ticker" id="announcement-ticker">Loading Announcements...</div>
+<div class="navbar">
+  <h1>🏏 Club Manager</h1>
+  <div class="nav-links">
+    <button onclick="nav('home')">Home</button>
+    <button onclick="nav('rankings')">Rankings</button>
+    <button onclick="nav('admin')">Admin</button>
+  </div>
 </div>
 
-<nav>
-    <button onclick="showSection('home')">Home</button>
-    <button onclick="showSection('rankings')">Rankings</button>
-    <button onclick="showSection('admin')">Admin</button>
-    <button onclick="showSection('player')">Player Zone</button>
-</nav>
+<div class="marquee" id="ticker">Waiting for announcements...</div>
 
 <div class="container">
 
-    <div id="home" class="section active">
-        <div class="card">
-            <h2>Next Match Countdown</h2>
-            <div id="countdown-box">Calculations next match...</div>
-            <p id="next-match-details" style="text-align: center; color: var(--text-light);">Loading...</p>
-        </div>
-        <div class="card">
-            <h3>Latest Scores</h3>
-            <div id="latest-scores-list">Loading...</div>
-        </div>
+  <div id="home" class="view">
+    <div class="card" style="text-align: center;">
+      <h2 style="border:none;">Next Match Countdown</h2>
+      <div id="countdown" style="font-size: 2rem; color: var(--accent); font-weight: bold;">--:--:--</div>
+      <p id="next-match-info" style="color: var(--text-med);">Loading schedule...</p>
     </div>
 
-    <div id="rankings" class="section">
-        <div class="card">
-            <h2>Player Rankings</h2>
-            <div style="display: flex; gap: 10px;">
-                <select id="filter-season" onchange="applyFilters()"><option value="all">All Seasons</option></select>
-                <select id="filter-tourn" onchange="applyFilters()"><option value="all">All Tournaments</option></select>
-            </div>
-            <br>
-            <table id="player-table">
-                <thead><tr><th>Rank</th><th>Player</th><th>Runs</th><th>Wickets</th></tr></thead>
-                <tbody></tbody>
-            </table>
-        </div>
+    <div class="card">
+      <h2>Recent Matches</h2>
+      <table id="match-list-table">
+        <thead><tr><th>Date</th><th>Tournament</th><th>Match</th><th>Winner</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="rankings" class="view hidden">
+    <div class="card">
+      <h2>Player Rankings</h2>
+      <div style="display: flex; gap: 10px;">
+        <select id="rank-filter-season" onchange="renderRankings()"><option value="All">All Seasons</option></select>
+        <select id="rank-filter-tourn" onchange="renderRankings()"><option value="All">All Tournaments</option></select>
+      </div>
+      <table id="rankings-table">
+        <thead><tr><th>Rank</th><th>Player</th><th>Runs</th><th>Wickets</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="admin" class="view hidden">
+    
+    <div id="admin-login" class="card">
+      <h2>Admin Access</h2>
+      <input type="password" id="admin-pass-input" placeholder="Enter Password (9908)">
+      <button class="btn" onclick="verifyAdmin()">Login</button>
     </div>
 
-    <div id="admin" class="section">
-        <div class="card" id="admin-login-block">
-            <h3>Admin Login</h3>
-            <input type="text" id="admin-user" placeholder="Username">
-            <input type="password" id="admin-pass" placeholder="Password">
-            <button class="btn" onclick="adminLogin()">Login</button>
-        </div>
+    <div id="admin-dash" class="hidden">
+      
+      <div class="card">
+        <h2>1. Create Tournament</h2>
+        <input type="text" id="t-name" placeholder="Tournament Name (e.g. Winter Cup)">
+        <input type="text" id="t-season" placeholder="Season Year (e.g. 2026)">
+        <button class="btn" onclick="api('addTournament', {name: val('t-name'), season: val('t-season')})">Create Tournament</button>
+      </div>
 
-        <div id="admin-dashboard" style="display:none;">
-            <div class="card">
-                <h3>📢 Add Announcement</h3>
-                <input type="text" id="announce-msg" placeholder="Message">
-                <select id="announce-priority"><option value="High">High</option><option value="Low">Low</option></select>
-                <button class="btn" onclick="postData('addAnnouncement')">Post Announcement</button>
-            </div>
-            <div class="card">
-                <h3>👤 Add Player</h3>
-                <input type="text" id="p-name" placeholder="Name">
-                <input type="text" id="p-role" placeholder="Role (Batsman/Bowler)">
-                <input type="password" id="p-pass" placeholder="Set Password">
-                <button class="btn" onclick="postData('addPlayer')">Add Player</button>
-            </div>
-            <div class="card">
-                <h3>⚔️ Add Match Result</h3>
-                <input type="text" id="m-stage" placeholder="Stage Name (e.g. League Match)">
-                <input type="text" id="m-scores" placeholder="Scores Detail">
-                <button class="btn" onclick="postData('addMatch')">Update Match</button>
-            </div>
+      <div class="card">
+        <h2>2. Schedule Match</h2>
+        <label>Select Tournament:</label>
+        <select id="m-tourn-select"></select>
+        <input type="text" id="m-stage" placeholder="Custom Stage Name (e.g. Semi Final 1)">
+        <input type="date" id="m-date">
+        <div style="display:flex; gap:10px">
+          <input type="text" id="m-teamA" placeholder="Team A Name">
+          <input type="text" id="m-teamB" placeholder="Team B Name">
         </div>
-    </div>
+        <button class="btn" onclick="addMatch()">Schedule Match</button>
+      </div>
 
-    <div id="player" class="section">
-        <div class="card" id="player-login-block">
-            <h3>Player Login</h3>
-            <input type="text" id="pl-user" placeholder="Your Name">
-            <input type="password" id="pl-pass" placeholder="Your Password">
-            <button class="btn" onclick="playerLogin()">Enter</button>
+      <div class="card">
+        <h2>3. Update Scores</h2>
+        <label>Select Scheduled Match:</label>
+        <select id="score-match-select" onchange="loadMatchPlayers()"></select>
+        
+        <div id="score-entry-area" class="hidden">
+           <h4>Enter Stats</h4>
+           <p>Select Player and enter stats. Click 'Add' to queue, then 'Submit All' to save.</p>
+           <select id="score-player-select"></select>
+           <div style="display:flex; gap:5px">
+             <input type="number" id="s-runs" placeholder="Runs">
+             <input type="number" id="s-wkt" placeholder="Wickets">
+             <input type="number" id="s-ovr" placeholder="Overs">
+           </div>
+           <button class="btn btn-accent" onclick="queueStat()">+ Add Player Stat</button>
+           
+           <div id="stat-queue" style="margin: 10px 0; padding: 10px; background: #eee;"></div>
+           
+           <input type="text" id="s-winner" placeholder="Winning Team Name">
+           <button class="btn" onclick="submitMatchStats()">Submit Final Result</button>
         </div>
-        <div id="player-dashboard" style="display:none;">
-            <h2 id="pl-welcome"></h2>
-            <div class="card">
-                <h3>My Stats</h3>
-                <p>Statistics will load here via live sync.</p>
-            </div>
-        </div>
+      </div>
+      
     </div>
+  </div>
 
 </div>
 
 <script>
-    const API_URL = "YOUR_DEPLOYED_WEB_APP_URL_HERE"; // PASTE URL FROM PHASE 2
+  // --- CONFIG ---
+  const API_URL = "https://script.google.com/macros/s/AKfycbzHfOoRMRknuwKpOKcCWuupx3IyjLUKF-ER2BJoKD1gey_3fm5zDNUlMTQj-VHuAjA_/exec"; // <--- PASTE DEPLOYED URL HERE
+  let DB = {}; // Holds all data locally
+  let statQueue = [];
 
-    // --- NAVIGATION ---
-    function showSection(id) {
-        document.querySelectorAll('.section').forEach(d => d.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
+  // --- INIT ---
+  window.onload = async () => {
+    await loadData();
+    setInterval(updateCountdown, 1000);
+  };
+
+  async function loadData() {
+    document.getElementById('loader').classList.remove('hidden');
+    try {
+      const res = await fetch(API_URL + "?action=getAllData");
+      DB = await res.json();
+      console.log("DB Loaded:", DB);
+      
+      renderHome();
+      renderRankings();
+      populateDropdowns();
+      
+    } catch(e) { alert("Error loading data"); }
+    document.getElementById('loader').classList.add('hidden');
+  }
+
+  // --- NAVIGATION ---
+  function nav(id) {
+    document.querySelectorAll('.view').forEach(d => d.classList.add('hidden'));
+    document.getElementById(id).classList.remove('hidden');
+  }
+
+  function val(id) { return document.getElementById(id).value; }
+
+  // --- HOME LOGIC ---
+  function renderHome() {
+    // 1. Ticker
+    const anns = DB.announcements.sort((a,b) => b.Priority === "High" ? 1 : -1);
+    document.getElementById('ticker').innerText = anns.map(a => a.Message).join("  |  ");
+
+    // 2. Matches Table
+    const tbody = document.querySelector('#match-list-table tbody');
+    tbody.innerHTML = "";
+    DB.matches.slice(0, 10).forEach(m => {
+       // Find Tournament Name
+       const tourn = DB.tournaments.find(t => t.ID == m.TournamentID);
+       const tName = tourn ? tourn.Name : "Unknown";
+       
+       tbody.innerHTML += `<tr>
+         <td>${new Date(m.Date).toLocaleDateString()}</td>
+         <td>${tName}</td>
+         <td>${m.TeamA} vs ${m.TeamB} <br><small>${m.Stage}</small></td>
+         <td>${m.Winner || "-"}</td>
+       </tr>`;
+    });
+
+    // 3. Countdown (Find first future match)
+    const futureMatch = DB.matches.find(m => new Date(m.Date) > new Date());
+    if(futureMatch) {
+       window.nextMatchDate = new Date(futureMatch.Date);
+       document.getElementById('next-match-info').innerText = `${futureMatch.TeamA} vs ${futureMatch.TeamB} (${futureMatch.Stage})`;
+    } else {
+       document.getElementById('next-match-info').innerText = "No upcoming matches scheduled.";
     }
+  }
 
-    // --- INITIAL DATA LOAD ---
-    let globalData = {};
+  function updateCountdown() {
+    if(!window.nextMatchDate) return;
+    const now = new Date();
+    const diff = window.nextMatchDate - now;
+    if(diff < 0) return;
+    
+    const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    document.getElementById('countdown').innerText = `${d}d ${h}h`;
+  }
 
-    async function fetchData() {
-        try {
-            const response = await fetch(API_URL + "?op=getData");
-            const data = await response.json();
-            globalData = data;
-            
-            // Populate Announcements
-            let tickerText = data.announcements.slice(1).map(a => `[${a[2]}] ${a[1]}`).join("  *** ");
-            document.getElementById("announcement-ticker").innerText = tickerText;
+  // --- RANKING LOGIC (The Filter Engine) ---
+  function renderRankings() {
+    const sFilter = val('rank-filter-season');
+    const tFilter = val('rank-filter-tourn');
+    
+    // 1. Calculate Aggregates
+    let playerStats = {}; // { PlayerID: { runs: 0, wickets: 0, name: "" } }
 
-            // Populate Dropdowns & Tables
-            populateRankings(data.players.slice(1)); // Simple dump for now
-            
-            // Setup Countdown (Mock logic for example)
-            startCountdown("2026-03-01"); 
-        } catch (error) {
-            console.error("Error loading data", error);
+    DB.stats.forEach(stat => {
+        // Find Match to check filters
+        const match = DB.matches.find(m => m.MatchID == stat.MatchID);
+        if(!match) return;
+        const tourn = DB.tournaments.find(t => t.ID == match.TournamentID);
+        if(!tourn) return;
+
+        // Apply Filters
+        if (sFilter !== "All" && tourn.Season != sFilter) return;
+        if (tFilter !== "All" && tourn.ID != tFilter) return;
+
+        // Aggregation
+        if (!playerStats[stat.PlayerID]) {
+            const pInfo = DB.players.find(p => p.ID == stat.PlayerID);
+            playerStats[stat.PlayerID] = { name: pInfo ? pInfo.Name : "Unknown", runs: 0, wickets: 0 };
         }
-    }
+        playerStats[stat.PlayerID].runs += Number(stat.Runs);
+        playerStats[stat.PlayerID].wickets += Number(stat.Wickets);
+    });
 
-    // --- ADMIN LOGIC ---
-    function adminLogin() {
-        const u = document.getElementById("admin-user").value;
-        const p = document.getElementById("admin-pass").value;
-        if(u === "admin" && p === "9908") {
-            document.getElementById("admin-login-block").style.display = "none";
-            document.getElementById("admin-dashboard").style.display = "block";
-            alert("Welcome, Admin!");
-        } else {
-            alert("Wrong credentials!");
-        }
-    }
+    // 2. Render Table
+    const tbody = document.querySelector('#rankings-table tbody');
+    tbody.innerHTML = "";
+    Object.values(playerStats)
+      .sort((a,b) => b.runs - a.runs) // Sort by Runs by default
+      .forEach((p, i) => {
+        tbody.innerHTML += `<tr><td>${i+1}</td><td>${p.name}</td><td>${p.runs}</td><td>${p.wickets}</td></tr>`;
+      });
+  }
 
-    function postData(action) {
-        // Collect data based on action
-        let payload = {
-            action: action,
-            adminUser: "admin", 
-            adminPass: "9908", // Sending credentials for backend validation
-            id: Date.now().toString(), // Simple ID gen
-        };
+  // --- ADMIN LOGIC ---
+  function verifyAdmin() {
+    if(val('admin-pass-input') === "9908") {
+       document.getElementById('admin-login').classList.add('hidden');
+       document.getElementById('admin-dash').classList.remove('hidden');
+    } else { alert("Wrong Password"); }
+  }
 
-        if (action === "addAnnouncement") {
-            payload.message = document.getElementById("announce-msg").value;
-            payload.priority = document.getElementById("announce-priority").value;
-        }
-        if (action === "addPlayer") {
-            payload.name = document.getElementById("p-name").value;
-            payload.role = document.getElementById("p-role").value;
-            payload.password = document.getElementById("p-pass").value;
-            payload.team = "Default"; 
-        }
+  function populateDropdowns() {
+    // Populate Tournament Selects
+    const tSelect = document.getElementById('m-tourn-select');
+    const fSelect = document.getElementById('rank-filter-tourn');
+    tSelect.innerHTML = ""; fSelect.innerHTML = "<option value='All'>All Tournaments</option>";
+    
+    DB.tournaments.forEach(t => {
+      let opt = `<option value="${t.ID}">${t.Name} (${t.Season})</option>`;
+      tSelect.innerHTML += opt;
+      fSelect.innerHTML += opt;
+    });
 
-        // Send to GAS
-        fetch(API_URL, {
-            method: 'POST',
-            mode: 'no-cors', // IMPORTANT for Google Apps Script
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(payload)
-        }).then(() => {
-            alert("Data Submitted! Refresh to see changes.");
-            fetchData(); // Reload data
-        });
-    }
+    // Populate Match Select for Scoring
+    const mSelect = document.getElementById('score-match-select');
+    mSelect.innerHTML = "<option>Select Match...</option>";
+    DB.matches.filter(m => m.Status !== "Completed").forEach(m => {
+       mSelect.innerHTML += `<option value="${m.MatchID}">${m.TeamA} vs ${m.TeamB} (${m.Stage})</option>`;
+    });
+    
+    // Populate Players
+    const pSelect = document.getElementById('score-player-select');
+    pSelect.innerHTML = "";
+    DB.players.forEach(p => {
+       pSelect.innerHTML += `<option value="${p.ID}">${p.Name}</option>`;
+    });
+  }
 
-    // --- PLAYER LOGIC ---
-    function playerLogin() {
-        const u = document.getElementById("pl-user").value;
-        const p = document.getElementById("pl-pass").value;
-        
-        // In a real app, send to backend. For demo, we verify against loaded sheet data (less secure)
-        // Or send POST request for secure verification
-        
-        let payload = { action: "playerLogin", username: u, password: p };
-        
-        // This part usually requires the POST response handling which is tricky with no-cors. 
-        // For this architecture, we might check against the 'globalData' we fetched if we want it fast.
-        // Let's check locally for UI speed:
-        
-        // (Note: In production, do this server side. This is for prototype speed)
-        let player = globalData.players.find(r => r[1] === u && r[3] === p);
-        if (player) {
-             document.getElementById("player-login-block").style.display = "none";
-             document.getElementById("player-dashboard").style.display = "block";
-             document.getElementById("pl-welcome").innerText = "Welcome " + player[1];
-        } else {
-            alert("Invalid Player Login");
-        }
-    }
+  function addMatch() {
+    api('addMatch', {
+       tournId: val('m-tourn-select'),
+       stage: val('m-stage'),
+       date: val('m-date'),
+       teamA: val('m-teamA'),
+       teamB: val('m-teamB'),
+       password: "9908"
+    });
+  }
 
-    // --- UTILS ---
-    function startCountdown(dateStr) {
-        const countDownDate = new Date(dateStr).getTime();
-        const x = setInterval(function() {
-            const now = new Date().getTime();
-            const distance = countDownDate - now;
-            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            document.getElementById("countdown-box").innerHTML = days + "d " + " till next Match";
-        }, 1000);
-    }
+  function loadMatchPlayers() {
+     document.getElementById('score-entry-area').classList.remove('hidden');
+     statQueue = []; // clear queue
+     document.getElementById('stat-queue').innerHTML = "";
+  }
 
-    function populateRankings(rows) {
-        const tbody = document.querySelector("#player-table tbody");
-        tbody.innerHTML = "";
-        rows.forEach((row, index) => {
-            let tr = `<tr><td>${index + 1}</td><td>${row[1]}</td><td>-</td><td>-</td></tr>`;
-            tbody.innerHTML += tr;
-        });
-    }
+  function queueStat() {
+     const pId = val('score-player-select');
+     const pName = document.getElementById('score-player-select').options[document.getElementById('score-player-select').selectedIndex].text;
+     
+     const stat = {
+        id: pId,
+        runs: val('s-runs') || 0,
+        wickets: val('s-wkt') || 0,
+        overs: val('s-ovr') || 0,
+        catches: 0
+     };
+     statQueue.push(stat);
+     document.getElementById('stat-queue').innerHTML += `<div>${pName}: ${stat.runs} runs, ${stat.wickets} wkts</div>`;
+  }
 
-    // Boot
-    fetchData();
+  function submitMatchStats() {
+     api('updateMatchStats', {
+        matchId: val('score-match-select'),
+        winner: val('s-winner'),
+        playerStats: statQueue,
+        password: "9908"
+     });
+  }
 
+  // --- API HELPER ---
+  function api(action, payload) {
+     payload.action = action;
+     payload.password = "9908"; // Auto-include for admin actions
+     
+     document.getElementById('loader').classList.remove('hidden');
+     
+     fetch(API_URL, {
+       method: 'POST',
+       mode: 'no-cors',
+       body: JSON.stringify(payload)
+     }).then(() => {
+       alert("Success! Refreshing...");
+       location.reload(); 
+     });
+  }
 </script>
-
 </body>
 </html>
