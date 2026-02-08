@@ -3,170 +3,166 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Royal Cricket Club</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<title>Premier Cricket Club</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
 <style>
-  /* --- LUXURY THEME --- */
+  /* --- VIBRANT LIGHT THEME --- */
   :root {
-    --gold: #d4af37;
-    --gold-dim: #c5a028;
-    --navy: #0a192f;
-    --navy-light: #112240;
-    --white: #e6f1ff;
-    --glass: rgba(17, 34, 64, 0.85);
-    --shadow: 0 10px 30px -10px rgba(2,12,27,0.7);
-    --anim-speed: 0.3s;
+    --primary-grad: linear-gradient(135deg, #0061ff 0%, #60efff 100%); /* Electric Blue */
+    --accent-grad: linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%); /* Soft Energy */
+    --button-grad: linear-gradient(45deg, #FF512F 0%, #DD2476 100%); /* Vibrant Red/Pink */
+    
+    --bg-body: #f4f7f6; /* Very light grey/white */
+    --bg-card: #ffffff;
+    --text-main: #2c3e50; /* Dark Navy (Not Black) */
+    --text-light: #7f8c8d;
+    --gold: #f1c40f;
+    
+    --shadow: 0 10px 25px rgba(0,0,0,0.08);
+    --radius: 15px;
   }
 
   body {
-    font-family: 'Poppins', sans-serif;
-    background: radial-gradient(circle at top, #1b2d45, #0a192f);
-    color: var(--white);
+    font-family: 'Open Sans', sans-serif;
+    background: var(--bg-body);
+    color: var(--text-main);
     margin: 0; padding-bottom: 80px;
     min-height: 100vh;
-    overflow-x: hidden;
   }
 
-  h1, h2, h3 { font-family: 'Playfair Display', serif; color: var(--gold); margin-top: 0; }
-  
+  h1, h2, h3 { font-family: 'Montserrat', sans-serif; font-weight: 800; color: #1a252f; margin-top: 0; }
+  h1 { background: var(--primary-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
   /* --- ANIMATIONS --- */
-  @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-  @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(212, 175, 55, 0); } 100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); } }
-  
-  .view { animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+  @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  .view { animation: fadeInUp 0.5s ease-out; }
   .hidden { display: none !important; }
 
-  /* --- UI COMPONENTS --- */
-  .container { max-width: 1100px; margin: 0 auto; padding: 20px; }
+  /* --- UI CARDS --- */
+  .container { max-width: 1000px; margin: 0 auto; padding: 20px; }
   
   .card {
-    background: var(--navy-light);
-    border: 1px solid rgba(212, 175, 55, 0.1);
-    border-radius: 16px;
+    background: var(--bg-card);
+    border-radius: var(--radius);
     padding: 25px;
     margin-bottom: 25px;
     box-shadow: var(--shadow);
-    transition: transform 0.3s;
-    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0,0,0,0.02);
+    transition: transform 0.3s ease;
   }
-  .card:hover { transform: translateY(-5px); border-color: var(--gold); }
+  .card:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(0,0,0,0.12); }
 
-  /* Buttons */
-  .btn {
-    background: linear-gradient(135deg, var(--gold), var(--gold-dim));
-    color: var(--navy);
-    border: none; padding: 12px 24px;
-    border-radius: 50px;
-    font-weight: 600; text-transform: uppercase; letter-spacing: 1px;
-    cursor: pointer; width: 100%; margin-top: 15px;
-    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
-    transition: all 0.2s;
-    position: relative; overflow: hidden;
-  }
-  .btn:active { transform: scale(0.98); }
-  
-  /* Inputs */
+  /* --- INPUTS & BUTTONS --- */
   input, select {
     width: 100%; padding: 14px; margin: 8px 0;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.1);
-    color: var(--white); border-radius: 8px;
-    box-sizing: border-box; font-family: 'Poppins', sans-serif;
+    border: 2px solid #eef2f3; border-radius: 10px;
+    background: #fdfdfd; color: var(--text-main);
+    font-size: 1rem; transition: 0.3s;
+    box-sizing: border-box;
   }
-  input:focus, select:focus { border-color: var(--gold); outline: none; background: rgba(255,255,255,0.1); }
-  option { background: var(--navy); color: var(--white); }
+  input:focus, select:focus { border-color: #0061ff; outline: none; background: #fff; }
 
-  /* Tables */
-  table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-  th { text-align: left; padding: 15px; color: var(--gold); border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 0.9rem; text-transform: uppercase; }
-  td { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.95rem; }
-  tr:hover td { background: rgba(212, 175, 55, 0.05); cursor: pointer; }
+  .btn {
+    background: var(--button-grad);
+    color: white; border: none; padding: 14px 20px;
+    border-radius: 50px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+    cursor: pointer; width: 100%; margin-top: 15px;
+    box-shadow: 0 5px 15px rgba(221, 36, 118, 0.3);
+    transition: 0.2s;
+  }
+  .btn:hover { transform: scale(1.02); box-shadow: 0 8px 20px rgba(221, 36, 118, 0.4); }
+  .btn:active { transform: scale(0.98); }
 
-  /* --- HEADER & NAV --- */
+  /* --- HEADER --- */
   header {
-    background: rgba(10, 25, 47, 0.95);
-    position: sticky; top: 0; z-index: 1000;
-    border-bottom: 1px solid rgba(212, 175, 55, 0.2);
-    backdrop-filter: blur(20px);
+    background: white;
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
   }
   .nav-top {
     display: flex; justify-content: space-between; align-items: center;
-    padding: 15px 20px; max-width: 1100px; margin: 0 auto;
+    padding: 15px 20px; max-width: 1000px; margin: 0 auto;
   }
   .nav-scroll {
     display: flex; gap: 10px; overflow-x: auto; padding: 10px 20px;
-    max-width: 1100px; margin: 0 auto; scrollbar-width: none;
+    max-width: 1000px; margin: 0 auto;
   }
   .nav-btn {
-    background: transparent; border: 1px solid rgba(255,255,255,0.2);
-    color: var(--white); padding: 8px 20px; border-radius: 30px;
-    cursor: pointer; white-space: nowrap; transition: 0.3s;
-    font-size: 0.85rem;
+    background: #f0f2f5; color: var(--text-main); border: none;
+    padding: 8px 18px; border-radius: 20px; cursor: pointer;
+    font-weight: 600; font-size: 0.85rem; white-space: nowrap; transition: 0.3s;
   }
-  .nav-btn.active { background: var(--gold); color: var(--navy); border-color: var(--gold); font-weight: bold; }
+  .nav-btn.active { background: #0061ff; color: white; box-shadow: 0 4px 10px rgba(0,97,255,0.3); }
 
   /* --- TICKER --- */
   .ticker-wrap {
-    background: linear-gradient(90deg, #000, var(--navy));
-    color: var(--gold); padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.1);
-    overflow: hidden; white-space: nowrap; position: relative;
+    background: #2c3e50; color: white; padding: 12px 0;
+    overflow: hidden; white-space: nowrap; font-weight: 600;
   }
-  .ticker-content { display: inline-block; padding-left: 100%; animation: ticker 25s linear infinite; font-weight: 600; letter-spacing: 1px; }
-  @keyframes ticker { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
+  .ticker-content { display: inline-block; padding-left: 100%; animation: ticker 25s linear infinite; }
+  @keyframes ticker { 100% { transform: translate3d(-100%, 0, 0); } }
+
+  /* --- TABLES --- */
+  table { width: 100%; border-collapse: separate; border-spacing: 0 8px; margin-top: 10px; }
+  th { text-align: left; padding: 12px; color: #7f8c8d; font-size: 0.8rem; text-transform: uppercase; font-weight: 700; }
+  td { background: #f8f9fa; padding: 15px; font-size: 0.95rem; border-top: 1px solid #eee; border-bottom: 1px solid #eee; }
+  tr td:first-child { border-left: 1px solid #eee; border-top-left-radius: 10px; border-bottom-left-radius: 10px; }
+  tr td:last-child { border-right: 1px solid #eee; border-top-right-radius: 10px; border-bottom-right-radius: 10px; }
+  tr:hover td { background: white; box-shadow: 0 5px 15px rgba(0,0,0,0.05); transform: scale(1.01); transition: 0.2s; cursor: pointer; }
+
+  /* --- COUNTDOWN HERO --- */
+  .hero-card {
+    text-align: center;
+    background: var(--primary-grad);
+    color: white;
+  }
+  .timer { font-size: 2.5rem; font-family: 'Montserrat', sans-serif; font-weight: 800; text-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+  .vs-badge { background: rgba(255,255,255,0.2); padding: 5px 15px; border-radius: 20px; font-weight: bold; margin-top: 10px; display: inline-block; }
 
   /* --- MODAL --- */
   .modal-overlay {
-    position: fixed; inset: 0; background: rgba(0,0,0,0.8);
+    position: fixed; inset: 0; background: rgba(255,255,255,0.8); backdrop-filter: blur(5px);
     display: flex; justify-content: center; align-items: center; z-index: 2000;
-    backdrop-filter: blur(5px);
   }
   .modal-box {
-    background: var(--navy); width: 90%; max-width: 500px;
-    padding: 30px; border-radius: 20px; border: 1px solid var(--gold);
-    box-shadow: 0 0 30px rgba(212, 175, 55, 0.2);
-    max-height: 85vh; overflow-y: auto;
+    background: white; width: 90%; max-width: 500px; padding: 30px;
+    border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+    max-height: 85vh; overflow-y: auto; border: 1px solid #eee;
   }
-  .close-btn { float: right; color: var(--gold); font-size: 1.5rem; cursor: pointer; }
+  .close-btn { float: right; font-size: 2rem; cursor: pointer; color: #999; line-height: 0.8; }
 
   /* --- LOADER --- */
   #loader {
-    position: fixed; inset: 0; background: var(--navy); z-index: 9999;
+    position: fixed; inset: 0; background: white; z-index: 9999;
     display: flex; flex-direction: column; justify-content: center; align-items: center;
   }
-  .luxury-spinner {
-    width: 60px; height: 60px; border: 2px solid rgba(212, 175, 55, 0.3);
-    border-top: 2px solid var(--gold); border-radius: 50%;
-    animation: spin 1s infinite linear;
+  .spinner {
+    width: 50px; height: 50px; border: 5px solid #eee;
+    border-top-color: #0061ff; border-radius: 50%;
+    animation: spin 0.8s infinite linear;
   }
   @keyframes spin { 100% { transform: rotate(360deg); } }
 
-  /* --- COUNTDOWN --- */
-  .countdown-box {
-    text-align: center; padding: 20px;
-    background: linear-gradient(135deg, rgba(255,255,255,0.05), transparent);
-    border-radius: 12px; margin-bottom: 15px;
-  }
-  .timer { font-size: 2.5rem; font-family: 'Playfair Display', serif; color: var(--gold); font-weight: bold; text-shadow: 0 0 10px rgba(212, 175, 55, 0.5); }
 </style>
 </head>
 <body>
 
 <div id="loader">
-  <div class="luxury-spinner"></div>
-  <p style="margin-top: 20px; letter-spacing: 2px; font-size: 0.8rem; color: var(--gold);">INITIALIZING EXPERIENCE</p>
+  <div class="spinner"></div>
+  <p style="margin-top: 20px; color: #0061ff; font-weight: 600;">LOADING CLUB DATA...</p>
 </div>
 
 <div id="match-modal" class="modal-overlay hidden">
   <div class="modal-box view">
     <span class="close-btn" onclick="closeModal()">&times;</span>
-    <h2 id="m-modal-title" style="border-bottom: 1px solid var(--gold-dim); padding-bottom: 10px;"></h2>
-    <p id="m-modal-info" style="color: var(--white); opacity: 0.7;"></p>
-    <div style="background: rgba(212,175,55,0.1); padding: 15px; border-radius: 8px; text-align: center; margin: 15px 0;">
-      <span id="m-modal-winner" style="color: var(--gold); font-weight: bold; font-size: 1.1rem;"></span>
+    <h2 id="m-modal-title" style="color: #0061ff;"></h2>
+    <p id="m-modal-info" style="color: #777;"></p>
+    <div style="background: #eef2ff; padding: 15px; border-radius: 12px; text-align: center; margin: 15px 0;">
+      <span id="m-modal-winner" style="color: #0061ff; font-weight: 800; font-size: 1.2rem;"></span>
     </div>
-    <h3 style="font-size: 1rem; margin-top: 20px;">Player Performance</h3>
+    <h3 style="font-size: 1rem;">Player Performance</h3>
     <table id="m-modal-stats">
-      <thead><tr><th>Player</th><th>Team (In Match)</th><th>R</th><th>W</th></tr></thead>
+      <thead><tr><th>Player</th><th>Team</th><th>R</th><th>W</th></tr></thead>
       <tbody></tbody>
     </table>
   </div>
@@ -174,37 +170,35 @@
 
 <header>
   <div class="nav-top">
-    <h1>🏏 ROYAL CLUB</h1>
-    <div onclick="nav('login')" style="cursor: pointer; font-size: 0.8rem; letter-spacing: 1px; color: var(--gold);">🔒 MEMBER ACCESS</div>
+    <h1>CRICKET<span style="color:#0061ff">PRO</span></h1>
+    <div onclick="nav('login')" style="cursor: pointer; font-weight: 600; font-size: 0.8rem; color: #0061ff;">🔒 MEMBER LOGIN</div>
   </div>
   <div class="nav-scroll">
-    <button class="nav-btn active" onclick="nav('home')" id="btn-home">HOME</button>
-    <button class="nav-btn" onclick="nav('rankings')" id="btn-rankings">PLAYERS</button>
-    <button class="nav-btn" onclick="nav('teams')" id="btn-teams">TEAMS</button>
-    <button class="nav-btn hidden" onclick="nav('admin')" id="btn-admin">COMMAND CENTER</button>
-    <button class="nav-btn hidden" onclick="nav('profile')" id="btn-profile">MY PROFILE</button>
+    <button class="nav-btn active" onclick="nav('home')" id="btn-home">Home</button>
+    <button class="nav-btn" onclick="nav('rankings')" id="btn-rankings">Rankings</button>
+    <button class="nav-btn" onclick="nav('teams')" id="btn-teams">Teams</button>
+    <button class="nav-btn hidden" onclick="nav('admin')" id="btn-admin">Admin</button>
+    <button class="nav-btn hidden" onclick="nav('profile')" id="btn-profile">Profile</button>
   </div>
 </header>
 
 <div class="ticker-wrap">
-  <div class="ticker-content" id="ticker-text">Loading Latest Club Announcements...</div>
+  <div class="ticker-content" id="ticker-text">Loading Announcements...</div>
 </div>
 
 <div class="container">
 
   <div id="home" class="view">
-    <div class="card">
-      <h3 style="text-align: center; color: var(--white); opacity: 0.8;">NEXT ENCOUNTER</h3>
-      <div class="countdown-box">
-        <div class="timer" id="countdown">-- : -- : --</div>
-        <div id="next-match-vs" style="margin-top: 10px; font-size: 1.1rem;">Loading Schedule...</div>
-      </div>
+    <div class="card hero-card">
+      <h3 style="color: white; opacity: 0.9; margin-bottom: 5px;">NEXT MATCH</h3>
+      <div class="timer" id="countdown">-- : --</div>
+      <div id="next-match-vs" class="vs-badge">Loading Schedule...</div>
     </div>
 
     <div class="card">
-      <h2>Match History</h2>
+      <h2>Match Center</h2>
       <table id="match-table">
-        <thead><tr><th>Date</th><th>Fixture</th><th>Result</th></tr></thead>
+        <thead><tr><th>Date</th><th>Fixture</th><th>Status</th></tr></thead>
         <tbody></tbody>
       </table>
     </div>
@@ -212,7 +206,7 @@
 
   <div id="rankings" class="view hidden">
     <div class="card">
-      <h2>Top Performers</h2>
+      <h2>Top Players</h2>
       <div style="display: flex; gap: 10px;">
         <select id="f-seas" onchange="renderRankings()"><option value="All">All Seasons</option></select>
         <select id="f-tourn" onchange="renderRankings()"><option value="All">All Tournaments</option></select>
@@ -226,7 +220,7 @@
 
   <div id="teams" class="view hidden">
     <div class="card">
-      <h2>Team Rankings</h2>
+      <h2>Team Standings</h2>
       <table id="t-rank-table">
         <thead><tr><th>Team</th><th>Mat</th><th>Won</th><th>Lost</th></tr></thead>
         <tbody></tbody>
@@ -236,21 +230,21 @@
 
   <div id="login" class="view hidden">
     <div class="card" style="max-width: 400px; margin: 40px auto; text-align: center;">
-      <h2>Secure Entry</h2>
-      <select id="login-role" onchange="toggleLogin()" style="margin-bottom: 20px;">
+      <h2 style="color:#0061ff;">Secure Access</h2>
+      <select id="login-role" onchange="toggleLogin()">
         <option value="admin">Admin</option>
         <option value="player">Player</option>
       </select>
       
       <div id="admin-login-box">
-        <input type="password" id="admin-pass" placeholder="Enter Access Code">
-        <button class="btn" onclick="doAdminLogin()">Unlock Admin</button>
+        <input type="password" id="admin-pass" placeholder="Enter Admin Password">
+        <button class="btn" onclick="doAdminLogin()">Enter Admin Panel</button>
       </div>
       
       <div id="player-login-box" class="hidden">
         <select id="login-pid"></select>
         <input type="password" id="player-pass" placeholder="Player Password">
-        <button class="btn" onclick="doPlayerLogin()">Access Profile</button>
+        <button class="btn" onclick="doPlayerLogin()">View Profile</button>
       </div>
     </div>
   </div>
@@ -258,84 +252,81 @@
   <div id="admin" class="view hidden">
     <div class="card">
       <h3>📢 Announcements</h3>
-      <input type="text" id="ann-msg" placeholder="Broadcast Message">
-      <select id="ann-prio"><option value="High">Priority: High</option><option value="Low">Priority: Low</option></select>
-      <button class="btn" onclick="api('addAnnouncement', {id: Date.now(), message: val('ann-msg'), priority: val('ann-prio'), date: new Date()})">Publish</button>
+      <input type="text" id="ann-msg" placeholder="Write message...">
+      <select id="ann-prio"><option value="High">High Priority</option><option value="Low">Low Priority</option></select>
+      <button class="btn" onclick="api('addAnnouncement', {id: Date.now(), message: val('ann-msg'), priority: val('ann-prio'), date: new Date()})">Post Announcement</button>
       <div id="adm-ann-list" style="margin-top: 15px;"></div>
     </div>
 
     <div class="card">
-      <h3>👤 Roster Management</h3>
+      <h3>👤 Add Player</h3>
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
         <input type="text" id="p-name" placeholder="Full Name">
-        <input type="password" id="p-pass" placeholder="Password">
+        <input type="password" id="p-pass" placeholder="Set Password">
       </div>
-      <small style="color: #aaa;">*Team is assigned per match</small>
       <button class="btn" onclick="api('addPlayer', {id: 'P'+Date.now(), name: val('p-name'), role: 'All-Rounder', password: val('p-pass'), team: 'Free Agent'})">Register Player</button>
       <div id="adm-player-list" style="margin-top: 15px; max-height: 200px; overflow-y: auto;"></div>
     </div>
 
     <div class="card">
-      <h3>📅 Schedule Fixture</h3>
+      <h3>📅 Create Fixture</h3>
       <select id="adm-tourn"></select>
-      <input type="text" id="m-stage" placeholder="Stage Name (e.g. Qualifier 1)">
+      <input type="text" id="m-stage" placeholder="Stage (e.g. Semi Final)">
       <input type="date" id="m-date">
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-        <input type="text" id="m-teamA" placeholder="Team A Name">
-        <input type="text" id="m-teamB" placeholder="Team B Name">
+        <input type="text" id="m-teamA" placeholder="Team A">
+        <input type="text" id="m-teamB" placeholder="Team B">
       </div>
-      <button class="btn" onclick="api('addMatch', {id: 'M'+Date.now(), tournId: val('adm-tourn'), stage: val('m-stage'), date: val('m-date'), teamA: val('m-teamA'), teamB: val('m-teamB')})">Create Fixture</button>
+      <button class="btn" onclick="api('addMatch', {id: 'M'+Date.now(), tournId: val('adm-tourn'), stage: val('m-stage'), date: val('m-date'), teamA: val('m-teamA'), teamB: val('m-teamB')})">Schedule Match</button>
     </div>
 
     <div class="card">
-      <h3>📝 Match Scoring</h3>
+      <h3>📝 Update Scores</h3>
       <select id="score-match" onchange="enableScoring()"></select>
       
       <div id="score-box" class="hidden">
-        <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; margin-top: 15px;">
-           <label style="color: var(--gold); font-size: 0.9rem;">1. Select Player & Team</label>
+        <div style="background: #f8f9fa; padding: 20px; border-radius: 12px; margin-top: 15px; border: 1px solid #eee;">
+           <label style="font-weight:bold; color:#0061ff;">1. Select Player</label>
            <select id="score-player"></select>
            
-           <label style="color: var(--gold); font-size: 0.9rem;">2. Which Team did they play for?</label>
-           <select id="score-team-select">
-             <option value="">Select Team...</option>
-             </select>
+           <label style="font-weight:bold; color:#0061ff;">2. Playing For Team?</label>
+           <select id="score-team-select"><option value="">Select Team...</option></select>
 
            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
              <input type="number" id="s-runs" placeholder="Runs">
-             <input type="number" id="s-wkt" placeholder="Wickets">
+             <input type="number" id="s-wkt" placeholder="Wkts">
              <input type="number" id="s-ovr" placeholder="Overs">
            </div>
-           <button class="btn" style="background: var(--navy); border: 1px solid var(--gold);" onclick="queueStat()">+ Add Player Stat</button>
+           <button class="btn" style="background: #333;" onclick="queueStat()">+ Add Stat</button>
         </div>
 
-        <div id="stat-queue" style="margin: 15px 0; font-size: 0.9rem; color: var(--gold);"></div>
+        <div id="stat-queue" style="margin: 15px 0; font-size: 0.9rem; color: #0061ff;"></div>
         
-        <input type="text" id="s-winner" placeholder="Winning Team Name">
-        <button class="btn" onclick="submitResult()">Finalize Match Result</button>
+        <input type="text" id="s-winner" placeholder="Winner Team Name">
+        <button class="btn" onclick="submitResult()">Finalize Result</button>
       </div>
     </div>
   </div>
 
   <div id="profile" class="view hidden">
     <div class="card" style="text-align: center;">
-      <h2 id="prof-name" style="font-size: 2rem;"></h2>
-      <p style="color: var(--gold);">Career Statistics</p>
+      <div style="width: 80px; height: 80px; background: #eef2ff; border-radius: 50%; margin: 0 auto 15px; display:flex; align-items:center; justify-content:center; font-size:2rem;">👤</div>
+      <h2 id="prof-name"></h2>
       
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px;">
-        <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px;">
-          <div style="font-size: 2rem; font-weight: bold; color: var(--white);" id="prof-runs">0</div>
-          <div style="font-size: 0.8rem; letter-spacing: 1px;">TOTAL RUNS</div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 25px;">
+        <div style="background: linear-gradient(135deg, #0061ff, #60efff); color: white; padding: 20px; border-radius: 15px;">
+          <div style="font-size: 2.5rem; font-weight: 800;" id="prof-runs">0</div>
+          <div style="font-size: 0.8rem; font-weight: 600;">TOTAL RUNS</div>
         </div>
-        <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px;">
-          <div style="font-size: 2rem; font-weight: bold; color: var(--white);" id="prof-wkts">0</div>
-          <div style="font-size: 0.8rem; letter-spacing: 1px;">TOTAL WICKETS</div>
+        <div style="background: linear-gradient(135deg, #FF512F, #DD2476); color: white; padding: 20px; border-radius: 15px;">
+          <div style="font-size: 2.5rem; font-weight: 800;" id="prof-wkts">0</div>
+          <div style="font-size: 0.8rem; font-weight: 600;">TOTAL WICKETS</div>
         </div>
       </div>
 
-      <h3 style="margin-top: 30px; text-align: left;">Match Log</h3>
+      <h3 style="margin-top: 30px; text-align: left; color:#2c3e50;">Match History</h3>
       <table id="prof-history">
-        <thead><tr><th>Date</th><th>Played For</th><th>vs</th><th>Perf</th></tr></thead>
+        <thead><tr><th>Date</th><th>For Team</th><th>vs</th><th>Perf</th></tr></thead>
         <tbody></tbody>
       </table>
     </div>
@@ -345,8 +336,7 @@
 
 <script>
 // --- CONFIGURATION ---
-// IMPORTANT: Update this URL if you redeployed your Google Script
-const API_URL = "https://script.google.com/macros/s/AKfycbwVPV_BiScvuiWgvOjepsfZTRkfFmZKUwVc8UGv4VEetiOHNDv8P9qjKqD8XLnl0gvT/exec"; 
+const API_URL = "https://script.google.com/macros/s/AKfycbwVPV_BiScvuiWgvOjepsfZTRkfFmZKUwVc8UGv4VEetiOHNDv8P9qjKqD8XLnl0gvT/exec";
 
 let DB = {};
 let statQueue = [];
@@ -365,7 +355,7 @@ async function loadData() {
     const res = await fetch(API_URL + "?action=getAllData");
     DB = await res.json();
     refreshUI();
-  } catch(e) { console.error(e); alert("Server Connection Failed. Please reload."); }
+  } catch(e) { console.error(e); alert("Failed to load data. Please refresh."); }
   document.getElementById('loader').classList.add('hidden');
 }
 
@@ -380,7 +370,6 @@ function refreshUI() {
   renderTeams();
   populateDropdowns();
   
-  // Refresh Lists if Admin
   if(!document.getElementById('admin').classList.contains('hidden')) renderAdminLists();
 }
 
@@ -397,10 +386,10 @@ function renderHome() {
     tr.innerHTML = `
       <td>${new Date(m.Date).toLocaleDateString()}</td>
       <td>
-        <div style="font-weight:bold; color:var(--white);">${m.TeamA} <span style="color:var(--gold)">vs</span> ${m.TeamB}</div>
-        <div style="font-size:0.8rem; opacity:0.7;">${t ? t.Name : ''} | ${m.Stage}</div>
+        <div style="font-weight:bold; color:#2c3e50;">${m.TeamA} <span style="color:#aaa">vs</span> ${m.TeamB}</div>
+        <div style="font-size:0.8rem; color:#7f8c8d;">${t ? t.Name : ''} | ${m.Stage}</div>
       </td>
-      <td>${m.Winner ? `<span style="color:var(--gold)">${m.Winner} Won</span>` : "Upcoming"}</td>
+      <td>${m.Winner ? `<span style="color:#00c853; font-weight:bold;">${m.Winner} Won</span>` : `<span style="color:#0061ff; font-weight:bold;">Upcoming</span>`}</td>
     `;
     tr.onclick = () => openMatchModal(m);
     tbody.appendChild(tr);
@@ -410,7 +399,7 @@ function renderHome() {
   const future = DB.matches.filter(m => new Date(m.Date) > new Date()).sort((a,b) => new Date(a.Date) - new Date(b.Date))[0];
   if(future) {
     window.nextEvent = new Date(future.Date);
-    document.getElementById('next-match-vs').innerHTML = `${future.TeamA} <span style="color:var(--gold)">VS</span> ${future.TeamB}`;
+    document.getElementById('next-match-vs').innerHTML = `${future.TeamA} <span style="opacity:0.7">VS</span> ${future.TeamB}`;
   } else {
     document.getElementById('next-match-vs').innerText = "No Scheduled Matches";
     document.getElementById('countdown').innerText = "-- : --";
@@ -425,7 +414,7 @@ function updateCountdown() {
   const d = Math.floor(diff / (1000 * 60 * 60 * 24));
   const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
   const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-  document.getElementById('countdown').innerText = `${d}d : ${h}h : ${m}m`;
+  document.getElementById('countdown').innerText = `${d}d ${h}h ${m}m`;
 }
 
 function renderRankings() {
@@ -476,12 +465,11 @@ function openMatchModal(m) {
   const t = DB.tournaments.find(x => x.ID == m.TournamentID);
   document.getElementById('m-modal-title').innerText = `${m.TeamA} vs ${m.TeamB}`;
   document.getElementById('m-modal-info').innerText = `${t ? t.Name : ''} - ${new Date(m.Date).toLocaleDateString()}`;
-  document.getElementById('m-modal-winner').innerText = m.Winner ? `WINNER: ${m.Winner}` : "MATCH PENDING";
+  document.getElementById('m-modal-winner').innerText = m.Winner ? `WINNER: ${m.Winner}` : "PENDING";
   
   const tbody = document.querySelector('#m-modal-stats tbody');
   tbody.innerHTML = "";
   
-  // Filter stats for this match
   const matchStats = DB.stats.filter(s => s.MatchID == m.MatchID);
   
   if(matchStats.length === 0) {
@@ -489,16 +477,8 @@ function openMatchModal(m) {
   } else {
     matchStats.forEach(s => {
        const p = DB.players.find(x => x.ID == s.PlayerID);
-       // Show Team Name from Stat (The specific team they played for in this match)
-       // If undefined (old data), fallback to player default or "-"
+       // Uses the saved team name for that match
        let teamName = s.Team || (p ? p.Team : "-"); 
-       // Note: To support "Team" column in stats, backend must save it. 
-       // In frontend we rely on what we saved.
-       
-       // IF the sheet doesn't have a "Team" column in Stats yet, we might need to rely on the Player List default
-       // But user asked for "Any team", so we assume backend now sends it.
-       // Since the "old" getData might not have named keys if we didn't update headers, 
-       // let's assume index 7 is Team if we added it, or use logic.
        
        tbody.innerHTML += `<tr>
          <td>${p ? p.Name : 'Unknown'}</td>
@@ -514,7 +494,6 @@ function closeModal() { document.getElementById('match-modal').classList.add('hi
 
 // --- ADMIN & LOGIC ---
 function api(action, payload) {
-  // Optimistic UI for smoothness
   payload.action = action;
   payload.password = "9908";
   
@@ -523,8 +502,7 @@ function api(action, payload) {
     method: 'POST', mode: 'no-cors', body: JSON.stringify(payload)
   }).then(() => {
      setTimeout(() => { 
-       loadData(); // Background Refresh
-       // If adding match, re-enable scoring dropdowns
+       loadData(); 
        if(action === 'addMatch') alert("Fixture Created");
      }, 1500);
   });
@@ -536,7 +514,7 @@ function enableScoring() {
   const teamSelect = document.getElementById('score-team-select');
   
   if(match) {
-    // Populate Team Select with ONLY the two teams playing
+    // Populate team select with ONLY the playing teams
     teamSelect.innerHTML = `<option value="${match.TeamA}">${match.TeamA}</option>
                             <option value="${match.TeamB}">${match.TeamB}</option>`;
     
@@ -547,7 +525,7 @@ function enableScoring() {
 
 function queueStat() {
   const pid = val('score-player');
-  const teamName = val('score-team-select'); // CRITICAL: Get Selected Team
+  const teamName = val('score-team-select');
   const name = document.getElementById('score-player').options[document.getElementById('score-player').selectedIndex].text;
   
   if(!teamName) { alert("Please select which team the player played for!"); return; }
@@ -560,13 +538,12 @@ function queueStat() {
     wickets: val('s-wkt')||0,
     overs: val('s-ovr')||0,
     catches: 0,
-    teamName: teamName // Send to backend
+    teamName: teamName
   };
   
   statQueue.push(item);
   document.getElementById('stat-queue').innerHTML += `<div>+ ${name} (${teamName}): ${item.runs}R, ${item.wickets}W</div>`;
   
-  // Send Immediately
   api('addStat', item); 
 }
 
@@ -587,7 +564,6 @@ function renderProfile(p) {
      totalRuns += Number(s.Runs); totalWkts += Number(s.Wickets);
      const m = DB.matches.find(x => x.MatchID == s.MatchID);
      if(m) {
-       // Determine which team they played for (Saved in stat, or infer)
        const playedFor = s.Team || "Flex"; 
        const opponent = (playedFor === m.TeamA) ? m.TeamB : m.TeamA;
        
@@ -645,7 +621,7 @@ function renderAdminLists() {
   const pl = document.getElementById('adm-player-list');
   pl.innerHTML = "";
   DB.players.forEach(p => {
-    pl.innerHTML += `<div style="display:flex; justify-content:space-between; padding:8px; border-bottom:1px solid rgba(255,255,255,0.1); font-size:0.9rem;">
+    pl.innerHTML += `<div style="display:flex; justify-content:space-between; padding:8px; border-bottom:1px solid #eee; font-size:0.9rem;">
       <span>${p.Name}</span>
       <span style="color:red; cursor:pointer;" onclick="api('deletePlayer', {id:'${p.ID}'})">DELETE</span>
     </div>`;
@@ -654,7 +630,7 @@ function renderAdminLists() {
   const al = document.getElementById('adm-ann-list');
   al.innerHTML = "";
   DB.announcements.forEach(a => {
-    al.innerHTML += `<div style="display:flex; justify-content:space-between; padding:8px; border-bottom:1px solid rgba(255,255,255,0.1); font-size:0.9rem;">
+    al.innerHTML += `<div style="display:flex; justify-content:space-between; padding:8px; border-bottom:1px solid #eee; font-size:0.9rem;">
       <span>${a.Message}</span>
       <span style="color:red; cursor:pointer;" onclick="api('deleteAnnouncement', {id:'${a.ID}'})">DELETE</span>
     </div>`;
