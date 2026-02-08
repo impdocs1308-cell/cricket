@@ -1,52 +1,341 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cricket Club Management Pro</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <title>Cricket Club Management</title>
     <style>
-        body { font-family: 'Inter', sans-serif; overflow-x: hidden; }
-        @keyframes marquee {
-            0% { transform: translateX(100%); }
-            100% { transform: translateX(-100%); }
+        /* --- LIGHT THEME & ANIMATIONS --- */
+        :root {
+            --primary: #3498db; /* Bright Blue */
+            --secondary: #e67e22; /* Orange for Highlights */
+            --bg-light: #f4f9ff; /* Very light blueish white */
+            --text-main: #2c3e50; /* Dark Blue Grey - NO BLACK */
+            --text-light: #7f8c8d;
+            --white: #ffffff;
+            --shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
         }
-        .animate-marquee {
-            display: inline-block;
-            white-space: nowrap;
-            animation: marquee 30s linear infinite;
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
         }
-        .animate-marquee:hover {
-            animation-play-state: paused;
+
+        /* --- LAYOUT --- */
+        header {
+            background: linear-gradient(135deg, #6dd5fa, #2980b9);
+            color: var(--white);
+            padding: 20px;
+            text-align: center;
+            box-shadow: var(--shadow);
         }
-        /* Hide scrollbar for Chrome, Safari and Opera */
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
+
+        nav {
+            display: flex;
+            justify-content: center;
+            background: var(--white);
+            padding: 10px;
+            margin-bottom: 20px;
         }
-        /* Hide scrollbar for IE, Edge and Firefox */
-        .no-scrollbar {
-            -ms-overflow-style: none;  /* IE and Edge */
-            scrollbar-width: none;  /* Firefox */
+
+        nav button {
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: color 0.3s;
         }
+
+        nav button:hover { color: var(--primary); font-weight: bold; }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        
+        /* --- SECTIONS --- */
+        .section { display: none; animation: fadeIn 0.5s ease-in-out; }
+        .section.active { display: block; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- COMPONENTS --- */
+        .card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+            border-left: 5px solid var(--primary);
+        }
+
+        .ticker-wrap {
+            width: 100%;
+            background-color: #dcedc8; /* Light Green */
+            overflow: hidden;
+            height: 40px;
+            line-height: 40px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        .ticker { display: inline-block; white-space: nowrap; animation: ticker 20s linear infinite; padding-left: 100%; color: #33691e; font-weight: bold; }
+        @keyframes ticker { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
+
+        table { width: 100%; border-collapse: collapse; background: var(--white); border-radius: 8px; overflow: hidden; }
+        th { background-color: var(--primary); color: var(--white); padding: 12px; text-align: left; }
+        td { padding: 12px; border-bottom: 1px solid #eee; color: var(--text-main); }
+        tr:hover { background-color: #eef7fc; }
+
+        input, select {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            margin: 5px 0;
+            width: 100%;
+            box-sizing: border-box;
+            background: #fafafa;
+            color: var(--text-main);
+        }
+
+        .btn {
+            background-color: var(--primary);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .btn:hover { background-color: #2980b9; }
+
+        /* --- COUNTDOWN --- */
+        #countdown-box { font-size: 1.5em; text-align: center; color: var(--secondary); font-weight: bold; margin: 20px 0; }
     </style>
-    <script type="importmap">
-{
-  "imports": {
-    "react": "https://esm.sh/react@^19.2.4",
-    "react-dom": "https://esm.sh/react-dom@^19.2.4",
-    "react-dom/client": "https://esm.sh/react-dom@^19.2.4/client",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
-    "react/": "https://esm.sh/react@^19.2.4/"
-  }
-}
-</script>
 </head>
-<body class="bg-slate-50 text-slate-900">
-    <div id="root"></div>
-    <script type="module" src="./index.tsx"></script>
+<body>
+
+<header>
+    <h1>🏏 Cricket Club Management</h1>
+    <p>Live Scores | Rankings | Official Stats</p>
+</header>
+
+<div class="ticker-wrap">
+    <div class="ticker" id="announcement-ticker">Loading Announcements...</div>
+</div>
+
+<nav>
+    <button onclick="showSection('home')">Home</button>
+    <button onclick="showSection('rankings')">Rankings</button>
+    <button onclick="showSection('admin')">Admin</button>
+    <button onclick="showSection('player')">Player Zone</button>
+</nav>
+
+<div class="container">
+
+    <div id="home" class="section active">
+        <div class="card">
+            <h2>Next Match Countdown</h2>
+            <div id="countdown-box">Calculations next match...</div>
+            <p id="next-match-details" style="text-align: center; color: var(--text-light);">Loading...</p>
+        </div>
+        <div class="card">
+            <h3>Latest Scores</h3>
+            <div id="latest-scores-list">Loading...</div>
+        </div>
+    </div>
+
+    <div id="rankings" class="section">
+        <div class="card">
+            <h2>Player Rankings</h2>
+            <div style="display: flex; gap: 10px;">
+                <select id="filter-season" onchange="applyFilters()"><option value="all">All Seasons</option></select>
+                <select id="filter-tourn" onchange="applyFilters()"><option value="all">All Tournaments</option></select>
+            </div>
+            <br>
+            <table id="player-table">
+                <thead><tr><th>Rank</th><th>Player</th><th>Runs</th><th>Wickets</th></tr></thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="admin" class="section">
+        <div class="card" id="admin-login-block">
+            <h3>Admin Login</h3>
+            <input type="text" id="admin-user" placeholder="Username">
+            <input type="password" id="admin-pass" placeholder="Password">
+            <button class="btn" onclick="adminLogin()">Login</button>
+        </div>
+
+        <div id="admin-dashboard" style="display:none;">
+            <div class="card">
+                <h3>📢 Add Announcement</h3>
+                <input type="text" id="announce-msg" placeholder="Message">
+                <select id="announce-priority"><option value="High">High</option><option value="Low">Low</option></select>
+                <button class="btn" onclick="postData('addAnnouncement')">Post Announcement</button>
+            </div>
+            <div class="card">
+                <h3>👤 Add Player</h3>
+                <input type="text" id="p-name" placeholder="Name">
+                <input type="text" id="p-role" placeholder="Role (Batsman/Bowler)">
+                <input type="password" id="p-pass" placeholder="Set Password">
+                <button class="btn" onclick="postData('addPlayer')">Add Player</button>
+            </div>
+            <div class="card">
+                <h3>⚔️ Add Match Result</h3>
+                <input type="text" id="m-stage" placeholder="Stage Name (e.g. League Match)">
+                <input type="text" id="m-scores" placeholder="Scores Detail">
+                <button class="btn" onclick="postData('addMatch')">Update Match</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="player" class="section">
+        <div class="card" id="player-login-block">
+            <h3>Player Login</h3>
+            <input type="text" id="pl-user" placeholder="Your Name">
+            <input type="password" id="pl-pass" placeholder="Your Password">
+            <button class="btn" onclick="playerLogin()">Enter</button>
+        </div>
+        <div id="player-dashboard" style="display:none;">
+            <h2 id="pl-welcome"></h2>
+            <div class="card">
+                <h3>My Stats</h3>
+                <p>Statistics will load here via live sync.</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    const API_URL = "YOUR_DEPLOYED_WEB_APP_URL_HERE"; // PASTE URL FROM PHASE 2
+
+    // --- NAVIGATION ---
+    function showSection(id) {
+        document.querySelectorAll('.section').forEach(d => d.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+    }
+
+    // --- INITIAL DATA LOAD ---
+    let globalData = {};
+
+    async function fetchData() {
+        try {
+            const response = await fetch(API_URL + "?op=getData");
+            const data = await response.json();
+            globalData = data;
+            
+            // Populate Announcements
+            let tickerText = data.announcements.slice(1).map(a => `[${a[2]}] ${a[1]}`).join("  *** ");
+            document.getElementById("announcement-ticker").innerText = tickerText;
+
+            // Populate Dropdowns & Tables
+            populateRankings(data.players.slice(1)); // Simple dump for now
+            
+            // Setup Countdown (Mock logic for example)
+            startCountdown("2026-03-01"); 
+        } catch (error) {
+            console.error("Error loading data", error);
+        }
+    }
+
+    // --- ADMIN LOGIC ---
+    function adminLogin() {
+        const u = document.getElementById("admin-user").value;
+        const p = document.getElementById("admin-pass").value;
+        if(u === "admin" && p === "9908") {
+            document.getElementById("admin-login-block").style.display = "none";
+            document.getElementById("admin-dashboard").style.display = "block";
+            alert("Welcome, Admin!");
+        } else {
+            alert("Wrong credentials!");
+        }
+    }
+
+    function postData(action) {
+        // Collect data based on action
+        let payload = {
+            action: action,
+            adminUser: "admin", 
+            adminPass: "9908", // Sending credentials for backend validation
+            id: Date.now().toString(), // Simple ID gen
+        };
+
+        if (action === "addAnnouncement") {
+            payload.message = document.getElementById("announce-msg").value;
+            payload.priority = document.getElementById("announce-priority").value;
+        }
+        if (action === "addPlayer") {
+            payload.name = document.getElementById("p-name").value;
+            payload.role = document.getElementById("p-role").value;
+            payload.password = document.getElementById("p-pass").value;
+            payload.team = "Default"; 
+        }
+
+        // Send to GAS
+        fetch(API_URL, {
+            method: 'POST',
+            mode: 'no-cors', // IMPORTANT for Google Apps Script
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(payload)
+        }).then(() => {
+            alert("Data Submitted! Refresh to see changes.");
+            fetchData(); // Reload data
+        });
+    }
+
+    // --- PLAYER LOGIC ---
+    function playerLogin() {
+        const u = document.getElementById("pl-user").value;
+        const p = document.getElementById("pl-pass").value;
+        
+        // In a real app, send to backend. For demo, we verify against loaded sheet data (less secure)
+        // Or send POST request for secure verification
+        
+        let payload = { action: "playerLogin", username: u, password: p };
+        
+        // This part usually requires the POST response handling which is tricky with no-cors. 
+        // For this architecture, we might check against the 'globalData' we fetched if we want it fast.
+        // Let's check locally for UI speed:
+        
+        // (Note: In production, do this server side. This is for prototype speed)
+        let player = globalData.players.find(r => r[1] === u && r[3] === p);
+        if (player) {
+             document.getElementById("player-login-block").style.display = "none";
+             document.getElementById("player-dashboard").style.display = "block";
+             document.getElementById("pl-welcome").innerText = "Welcome " + player[1];
+        } else {
+            alert("Invalid Player Login");
+        }
+    }
+
+    // --- UTILS ---
+    function startCountdown(dateStr) {
+        const countDownDate = new Date(dateStr).getTime();
+        const x = setInterval(function() {
+            const now = new Date().getTime();
+            const distance = countDownDate - now;
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            document.getElementById("countdown-box").innerHTML = days + "d " + " till next Match";
+        }, 1000);
+    }
+
+    function populateRankings(rows) {
+        const tbody = document.querySelector("#player-table tbody");
+        tbody.innerHTML = "";
+        rows.forEach((row, index) => {
+            let tr = `<tr><td>${index + 1}</td><td>${row[1]}</td><td>-</td><td>-</td></tr>`;
+            tbody.innerHTML += tr;
+        });
+    }
+
+    // Boot
+    fetchData();
+
+</script>
+
 </body>
 </html>
