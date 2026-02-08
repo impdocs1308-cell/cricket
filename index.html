@@ -159,9 +159,10 @@
 
 <script>
   // --- CONFIG ---
-  const API_URL = "https://script.google.com/macros/s/AKfycbz2oMZBNMk5rqWBm1NG8c3f0TruWL_pPhpPrAt0b-kmvFCBZQis8yY0KejlLRbwB7SI/exec"; // <--- PASTE DEPLOYED URL HERE
-  let DB = {}; // Holds all data locally
-  let statQueue = [];
+  // MAKE SURE THIS IS YOUR CORRECT 'script.google.com' URL
+  const API_URL = "https://script.google.com/macros/s/AKfycbz......YOUR_URL_HERE....../exec"; 
+  
+  let DB = {}; 
 
   // --- INIT ---
   window.onload = async () => {
@@ -169,93 +170,76 @@
     setInterval(updateCountdown, 1000);
   };
 
-  // async function loadData() {
-  //   document.getElementById('loader').classList.remove('hidden');
-  //   try {
-  //     const res = await fetch(API_URL + "?action=getAllData");
-  //     DB = await res.json();
-  //     console.log("DB Loaded:", DB);
-      
-  //     renderHome();
-  //     renderRankings();
-  //     populateDropdowns();
-      
-  //   } catch(e) { alert("Error loading data"); }
-  //   document.getElementById('loader').classList.add('hidden');
-  // }
-
   async function loadData() {
-      document.getElementById('loader').classList.remove('hidden');
+    try {
+      console.log("Fetching data...");
+      const res = await fetch(API_URL + "?action=getAllData");
+      const text = await res.text();
+      
       try {
-        console.log("Attempting to fetch from:", API_URL + "?action=getAllData");
-        const res = await fetch(API_URL + "?action=getAllData");
-        
-        // Check if the response is actually JSON
-        const text = await res.text(); 
-        console.log("Server response:", text);
-  
-        let data;
-        try {
-            data = JSON.parse(text);
-        } catch (e) {
-            alert("Error: Script returned HTML instead of JSON. Check your Permissions (Must be 'Anyone') and Sheet Tab Names.");
-            console.error("Parse Error", e);
-            return;
-        }
-  
-        if(data.status === "error") {
-            alert("Script Error: " + data.message);
-            return;
-        }
-  
-        DB = data; // Success
-        renderHome();
-        renderRankings();
-        populateDropdowns();
-        
-      } catch(e) { 
-          alert("Network Error: " + e.message + "\n\nDid you Deploy as 'Anyone'?");
+          DB = JSON.parse(text);
+      } catch (e) {
+          console.error("JSON Parse Error", text);
+          alert("Data Error: The sheet returned invalid data.");
+          return;
       }
-      document.getElementById('loader').classList.add('hidden');
-    }
 
-  // --- NAVIGATION ---
-  function nav(id) {
-    document.querySelectorAll('.view').forEach(d => d.classList.add('hidden'));
-    document.getElementById(id).classList.remove('hidden');
+      // 1. SAFE RENDER HOME
+      try { renderHome(); } catch(e) { console.error("Home Render Error:", e); }
+
+      // 2. SAFE RENDER RANKINGS
+      try { renderRankings(); } catch(e) { console.error("Rank Render Error:", e); }
+
+      // 3. SAFE DROPDOWNS
+      try { populateDropdowns(); } catch(e) { console.error("Dropdown Error:", e); }
+      
+    } catch(e) { 
+        alert("Connection Error: " + e.message);
+    } finally {
+        // --- THE MAGIC FIX: FORCE THE CURTAIN OPEN ---
+        document.getElementById('loader').classList.add('hidden');
+    }
   }
 
-  function val(id) { return document.getElementById(id).value; }
-
-  // --- HOME LOGIC ---
+  // --- RENDER FUNCTIONS ---
   function renderHome() {
-    // 1. Ticker
+    if(!DB.announcements) return;
+    
+    // Ticker
     const anns = DB.announcements.sort((a,b) => b.Priority === "High" ? 1 : -1);
     document.getElementById('ticker').innerText = anns.map(a => a.Message).join("  |  ");
 
-    // 2. Matches Table
+    // Matches Table
     const tbody = document.querySelector('#match-list-table tbody');
     tbody.innerHTML = "";
-    DB.matches.slice(0, 10).forEach(m => {
-       // Find Tournament Name
-       const tourn = DB.tournaments.find(t => t.ID == m.TournamentID);
-       const tName = tourn ? tourn.Name : "Unknown";
-       
-       tbody.innerHTML += `<tr>
-         <td>${new Date(m.Date).toLocaleDateString()}</td>
-         <td>${tName}</td>
-         <td>${m.TeamA} vs ${m.TeamB} <br><small>${m.Stage}</small></td>
-         <td>${m.Winner || "-"}</td>
-       </tr>`;
-    });
+    if(DB.matches) {
+        DB.matches.slice(0, 10).forEach(m => {
+           const tourn = DB.tournaments.find(t => t.ID == m.TournamentID);
+           const tName = tourn ? tourn.Name : "Unknown";
+           
+           // Safe Date
+           let dateStr = m.Date;
+           try { dateStr = new Date(m.Date).toLocaleDateString(); } catch(e) {}
 
-    // 3. Countdown (Find first future match)
-    const futureMatch = DB.matches.find(m => new Date(m.Date) > new Date());
-    if(futureMatch) {
-       window.nextMatchDate = new Date(futureMatch.Date);
-       document.getElementById('next-match-info').innerText = `${futureMatch.TeamA} vs ${futureMatch.TeamB} (${futureMatch.Stage})`;
-    } else {
-       document.getElementById('next-match-info').innerText = "No upcoming matches scheduled.";
+           tbody.innerHTML += `<tr>
+             <td>${dateStr}</td>
+             <td>${tName}</td>
+             <td>${m.TeamA} vs ${m.TeamB} <br><small>${m.Stage}</small></td>
+             <td>${m.Winner || "-"}</td>
+           </tr>`;
+        });
+    }
+
+    // Countdown
+    if(DB.matches) {
+        const futureMatch = DB.matches.find(m => new Date(m.Date) > new Date());
+        if(futureMatch) {
+           window.nextMatchDate = new Date(futureMatch.Date);
+           document.getElementById('next-match-info').innerText = `${futureMatch.TeamA} vs ${futureMatch.TeamB} (${futureMatch.Stage})`;
+        } else {
+           document.getElementById('next-match-info').innerText = "No upcoming matches scheduled.";
+           document.getElementById('countdown').innerText = "--:--:--";
+        }
     }
   }
 
@@ -270,26 +254,22 @@
     document.getElementById('countdown').innerText = `${d}d ${h}h`;
   }
 
-  // --- RANKING LOGIC (The Filter Engine) ---
   function renderRankings() {
-    const sFilter = val('rank-filter-season');
-    const tFilter = val('rank-filter-tourn');
+    if(!DB.stats) return;
+    const sFilter = document.getElementById('rank-filter-season').value;
+    const tFilter = document.getElementById('rank-filter-tourn').value;
     
-    // 1. Calculate Aggregates
-    let playerStats = {}; // { PlayerID: { runs: 0, wickets: 0, name: "" } }
+    let playerStats = {}; 
 
     DB.stats.forEach(stat => {
-        // Find Match to check filters
         const match = DB.matches.find(m => m.MatchID == stat.MatchID);
         if(!match) return;
         const tourn = DB.tournaments.find(t => t.ID == match.TournamentID);
-        if(!tourn) return;
+        
+        // Safe check for filters
+        if (sFilter !== "All" && tourn && tourn.Season != sFilter) return;
+        if (tFilter !== "All" && tourn && tourn.ID != tFilter) return;
 
-        // Apply Filters
-        if (sFilter !== "All" && tourn.Season != sFilter) return;
-        if (tFilter !== "All" && tourn.ID != tFilter) return;
-
-        // Aggregation
         if (!playerStats[stat.PlayerID]) {
             const pInfo = DB.players.find(p => p.ID == stat.PlayerID);
             playerStats[stat.PlayerID] = { name: pInfo ? pInfo.Name : "Unknown", runs: 0, wickets: 0 };
@@ -298,28 +278,33 @@
         playerStats[stat.PlayerID].wickets += Number(stat.Wickets);
     });
 
-    // 2. Render Table
     const tbody = document.querySelector('#rankings-table tbody');
     tbody.innerHTML = "";
     Object.values(playerStats)
-      .sort((a,b) => b.runs - a.runs) // Sort by Runs by default
+      .sort((a,b) => b.runs - a.runs)
       .forEach((p, i) => {
         tbody.innerHTML += `<tr><td>${i+1}</td><td>${p.name}</td><td>${p.runs}</td><td>${p.wickets}</td></tr>`;
       });
   }
 
-  // --- ADMIN LOGIC ---
+  // --- ADMIN FUNCTIONS ---
   function verifyAdmin() {
-    if(val('admin-pass-input') === "9908") {
+    if(document.getElementById('admin-pass-input').value === "9908") {
        document.getElementById('admin-login').classList.add('hidden');
        document.getElementById('admin-dash').classList.remove('hidden');
     } else { alert("Wrong Password"); }
   }
 
+  function nav(id) {
+    document.querySelectorAll('.view').forEach(d => d.classList.add('hidden'));
+    document.getElementById(id).classList.remove('hidden');
+  }
+
   function populateDropdowns() {
-    // Populate Tournament Selects
     const tSelect = document.getElementById('m-tourn-select');
     const fSelect = document.getElementById('rank-filter-tourn');
+    if(!DB.tournaments) return;
+
     tSelect.innerHTML = ""; fSelect.innerHTML = "<option value='All'>All Tournaments</option>";
     
     DB.tournaments.forEach(t => {
@@ -328,78 +313,56 @@
       fSelect.innerHTML += opt;
     });
 
-    // Populate Match Select for Scoring
     const mSelect = document.getElementById('score-match-select');
     mSelect.innerHTML = "<option>Select Match...</option>";
-    DB.matches.filter(m => m.Status !== "Completed").forEach(m => {
-       mSelect.innerHTML += `<option value="${m.MatchID}">${m.TeamA} vs ${m.TeamB} (${m.Stage})</option>`;
-    });
+    if(DB.matches) {
+        DB.matches.filter(m => m.Status !== "Completed").forEach(m => {
+           mSelect.innerHTML += `<option value="${m.MatchID}">${m.TeamA} vs ${m.TeamB} (${m.Stage})</option>`;
+        });
+    }
     
-    // Populate Players
     const pSelect = document.getElementById('score-player-select');
     pSelect.innerHTML = "";
-    DB.players.forEach(p => {
-       pSelect.innerHTML += `<option value="${p.ID}">${p.Name}</option>`;
-    });
+    if(DB.players) {
+        DB.players.forEach(p => {
+           pSelect.innerHTML += `<option value="${p.ID}">${p.Name}</option>`;
+        });
+    }
   }
 
-  function addMatch() {
-    api('addMatch', {
-       tournId: val('m-tourn-select'),
-       stage: val('m-stage'),
-       date: val('m-date'),
-       teamA: val('m-teamA'),
-       teamB: val('m-teamB'),
-       password: "9908"
-    });
-  }
+  // --- API ---
+  function val(id) { return document.getElementById(id).value; }
 
+  let statQueue = [];
   function loadMatchPlayers() {
      document.getElementById('score-entry-area').classList.remove('hidden');
-     statQueue = []; // clear queue
+     statQueue = []; 
      document.getElementById('stat-queue').innerHTML = "";
   }
 
   function queueStat() {
-     const pId = val('score-player-select');
-     const pName = document.getElementById('score-player-select').options[document.getElementById('score-player-select').selectedIndex].text;
-     
-     const stat = {
-        id: pId,
-        runs: val('s-runs') || 0,
-        wickets: val('s-wkt') || 0,
-        overs: val('s-ovr') || 0,
-        catches: 0
-     };
+     const pSelect = document.getElementById('score-player-select');
+     const pName = pSelect.options[pSelect.selectedIndex].text;
+     const stat = { id: pSelect.value, runs: val('s-runs'), wickets: val('s-wkt'), overs: val('s-ovr'), catches: 0 };
      statQueue.push(stat);
      document.getElementById('stat-queue').innerHTML += `<div>${pName}: ${stat.runs} runs, ${stat.wickets} wkts</div>`;
   }
 
-  function submitMatchStats() {
-     api('updateMatchStats', {
-        matchId: val('score-match-select'),
-        winner: val('s-winner'),
-        playerStats: statQueue,
-        password: "9908"
-     });
+  function addMatch() {
+    api('addMatch', { tournId: val('m-tourn-select'), stage: val('m-stage'), date: val('m-date'), teamA: val('m-teamA'), teamB: val('m-teamB') });
   }
 
-  // --- API HELPER ---
+  function submitMatchStats() {
+     api('updateMatchStats', { matchId: val('score-match-select'), winner: val('s-winner'), playerStats: statQueue });
+  }
+
   function api(action, payload) {
      payload.action = action;
-     payload.password = "9908"; // Auto-include for admin actions
-     
+     payload.password = "9908";
      document.getElementById('loader').classList.remove('hidden');
-     
-     fetch(API_URL, {
-       method: 'POST',
-       mode: 'no-cors',
-       body: JSON.stringify(payload)
-     }).then(() => {
-       alert("Success! Refreshing...");
-       location.reload(); 
-     });
+     fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) })
+     .then(() => { alert("Success! Refreshing..."); location.reload(); });
   }
-</script>
+</script>  
 </body>
 </html>
