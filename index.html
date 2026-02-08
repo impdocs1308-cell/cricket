@@ -169,20 +169,55 @@
     setInterval(updateCountdown, 1000);
   };
 
+  // async function loadData() {
+  //   document.getElementById('loader').classList.remove('hidden');
+  //   try {
+  //     const res = await fetch(API_URL + "?action=getAllData");
+  //     DB = await res.json();
+  //     console.log("DB Loaded:", DB);
+      
+  //     renderHome();
+  //     renderRankings();
+  //     populateDropdowns();
+      
+  //   } catch(e) { alert("Error loading data"); }
+  //   document.getElementById('loader').classList.add('hidden');
+  // }
+
   async function loadData() {
-    document.getElementById('loader').classList.remove('hidden');
-    try {
-      const res = await fetch(API_URL + "?action=getAllData");
-      DB = await res.json();
-      console.log("DB Loaded:", DB);
-      
-      renderHome();
-      renderRankings();
-      populateDropdowns();
-      
-    } catch(e) { alert("Error loading data"); }
-    document.getElementById('loader').classList.add('hidden');
-  }
+      document.getElementById('loader').classList.remove('hidden');
+      try {
+        console.log("Attempting to fetch from:", API_URL + "?action=getAllData");
+        const res = await fetch(API_URL + "?action=getAllData");
+        
+        // Check if the response is actually JSON
+        const text = await res.text(); 
+        console.log("Server response:", text);
+  
+        let data;
+        try {
+            data = JSON.parse(text);
+        } catch (e) {
+            alert("Error: Script returned HTML instead of JSON. Check your Permissions (Must be 'Anyone') and Sheet Tab Names.");
+            console.error("Parse Error", e);
+            return;
+        }
+  
+        if(data.status === "error") {
+            alert("Script Error: " + data.message);
+            return;
+        }
+  
+        DB = data; // Success
+        renderHome();
+        renderRankings();
+        populateDropdowns();
+        
+      } catch(e) { 
+          alert("Network Error: " + e.message + "\n\nDid you Deploy as 'Anyone'?");
+      }
+      document.getElementById('loader').classList.add('hidden');
+    }
 
   // --- NAVIGATION ---
   function nav(id) {
