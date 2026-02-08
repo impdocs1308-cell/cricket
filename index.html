@@ -3,160 +3,172 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pro Cricket Manager</title>
+<title>Cricket Club Manager Pro</title>
 <style>
   /* --- THEME: NO BLACK (Royal Blue & Soft Grey) --- */
   :root {
     --primary: #2b5876;  /* Deep Royal Blue */
     --secondary: #4e4376; /* Muted Purple-Blue */
-    --accent: #ff6b6b;   /* Soft Red for highlights */
-    --bg-body: #f3f6fa;  /* Very light blue-grey */
-    --glass: rgba(255, 255, 255, 0.95);
-    --text-main: #2c3e50; /* Dark Slate (Not Black) */
+    --accent: #ff6b6b;   /* Soft Red */
+    --bg-body: #f3f6fa;
+    --glass: rgba(255, 255, 255, 0.98);
+    --text-main: #2c3e50; 
     --text-light: #7f8c8d;
     --success: #2ecc71;
   }
 
   body {
-    font-family: 'Poppins', 'Segoe UI', sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
     color: var(--text-main);
-    margin: 0;
-    padding-bottom: 80px;
-    min-height: 100vh;
+    margin: 0; padding-bottom: 80px; min-height: 100vh;
+  }
+
+  /* --- UTILS --- */
+  .hidden { display: none !important; }
+  .btn {
+    width: 100%; padding: 12px; background: var(--primary);
+    color: white; border: none; border-radius: 8px;
+    font-weight: 600; cursor: pointer; margin-top: 10px;
+    transition: 0.2s;
+  }
+  .btn:hover { opacity: 0.9; transform: translateY(-1px); }
+  input, select {
+    width: 100%; padding: 10px; margin: 5px 0;
+    border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box;
   }
 
   /* --- LOADER --- */
   #loader {
     position: fixed; inset: 0; background: var(--bg-body);
     display: flex; flex-direction: column; align-items: center; justify-content: center;
-    z-index: 9999; transition: opacity 0.5s;
+    z-index: 9999;
   }
   .spinner {
-    width: 50px; height: 50px; border: 5px solid #ddd;
+    width: 40px; height: 40px; border: 4px solid #ddd;
     border-top-color: var(--primary); border-radius: 50%;
     animation: spin 1s linear infinite;
   }
   @keyframes spin { 100% { transform: rotate(360deg); } }
-  .hidden { display: none !important; }
 
-  /* --- HEADER & NAV --- */
+  /* --- HEADER --- */
   header {
     background: linear-gradient(to right, var(--primary), var(--secondary));
-    padding: 15px 20px; color: white;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    position: sticky; top: 0; z-index: 100;
+    padding: 15px; color: white; position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
   }
-  .header-content { max-width: 1000px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
-  h1 { margin: 0; font-size: 1.4rem; font-weight: 600; letter-spacing: 1px; }
+  .header-top { display: flex; justify-content: space-between; align-items: center; max-width: 1000px; margin: 0 auto; }
+  h1 { margin: 0; font-size: 1.2rem; }
   
-  nav { margin-top: 10px; display: flex; gap: 15px; overflow-x: auto; padding-bottom: 5px; }
+  nav { display: flex; gap: 10px; overflow-x: auto; padding-top: 10px; max-width: 1000px; margin: 0 auto; }
   nav button {
     background: rgba(255,255,255,0.2); border: none; color: white;
-    padding: 8px 16px; border-radius: 20px; cursor: pointer;
-    font-size: 0.9rem; white-space: nowrap; transition: 0.3s;
+    padding: 6px 14px; border-radius: 20px; cursor: pointer; white-space: nowrap;
   }
-  nav button.active, nav button:hover { background: white; color: var(--primary); font-weight: bold; }
+  nav button.active { background: white; color: var(--primary); font-weight: bold; }
 
-  /* --- LAYOUT --- */
-  .container { max-width: 1000px; margin: 20px auto; padding: 0 15px; }
-  .view { animation: fadeIn 0.4s ease-out; }
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  /* --- TICKER (SCROLLING FIX) --- */
+  .ticker-wrap {
+    width: 100%; overflow: hidden; background: var(--success); color: white;
+    white-space: nowrap; box-sizing: border-box; height: 40px; line-height: 40px;
+  }
+  .ticker {
+    display: inline-block; padding-left: 100%;
+    animation: ticker-scroll 20s linear infinite;
+  }
+  @keyframes ticker-scroll { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
 
-  /* --- CARDS & UI ELEMENTS --- */
+  /* --- CARDS --- */
+  .container { max-width: 1000px; margin: 20px auto; padding: 0 10px; }
   .card {
-    background: var(--glass); border-radius: 16px; padding: 25px;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.05); margin-bottom: 25px;
-    border: 1px solid rgba(255,255,255,0.5);
+    background: var(--glass); border-radius: 12px; padding: 20px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05); margin-bottom: 20px;
   }
-  
-  h2 { color: var(--primary); border-left: 5px solid var(--accent); padding-left: 15px; margin-top: 0; }
-  
-  /* Inputs */
-  input, select {
-    width: 100%; padding: 12px 15px; margin: 8px 0;
-    border: 1px solid #dcdde1; border-radius: 8px;
-    background: #fdfdfd; color: var(--text-main); font-size: 1rem;
-    box-sizing: border-box; transition: 0.2s;
-  }
-  input:focus, select:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 3px rgba(43, 88, 118, 0.1); }
-
-  /* Buttons */
-  .btn {
-    width: 100%; padding: 14px; background: var(--primary);
-    color: white; border: none; border-radius: 8px;
-    font-weight: 600; cursor: pointer; font-size: 1rem;
-    margin-top: 10px; box-shadow: 0 4px 6px rgba(43, 88, 118, 0.2);
-  }
-  .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 12px rgba(43, 88, 118, 0.3); }
-  .btn-del { background: #e74c3c; width: auto; padding: 5px 10px; font-size: 0.8rem; margin: 0; }
-
-  /* --- TICKER --- */
-  .ticker-wrap { background: var(--success); color: white; padding: 8px; font-weight: 600; font-size: 0.9rem; overflow: hidden; white-space: nowrap; }
+  h2 { color: var(--primary); border-bottom: 2px solid #eee; padding-bottom: 10px; margin-top: 0; }
 
   /* --- TABLES --- */
-  table { width: 100%; border-collapse: collapse; margin-top: 15px; background: white; border-radius: 10px; overflow: hidden; }
-  th { background: #dde1e7; color: var(--text-main); padding: 12px; text-align: left; font-weight: 700; font-size: 0.9rem; text-transform: uppercase; }
-  td { padding: 12px; border-bottom: 1px solid #eee; font-size: 0.95rem; }
-  tr:last-child td { border-bottom: none; }
-  tr:nth-child(even) { background: #f8f9fa; }
-  
-  .tag { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; background: #eee; color: #555; }
-  .tag-stage { background: #e3f2fd; color: #1976d2; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+  th { background: #e3f2fd; color: var(--text-main); padding: 10px; text-align: left; }
+  td { padding: 10px; border-bottom: 1px solid #eee; }
+  tr.clickable:hover { background: #eef7ff; cursor: pointer; }
+
+  /* --- MODAL (MATCH DETAILS) --- */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+    display: flex; justify-content: center; align-items: center; z-index: 2000;
+  }
+  .modal-content {
+    background: white; padding: 20px; border-radius: 12px; width: 90%; max-width: 500px;
+    max-height: 80vh; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  }
+  .close-btn { float: right; cursor: pointer; font-size: 1.5rem; color: #999; }
 </style>
 </head>
 <body>
 
-<div id="loader">
-  <div class="spinner"></div>
-  <p style="margin-top: 20px; font-weight: 600; color: var(--text-light);">Loading Club Data...</p>
+<div id="loader"><div class="spinner"></div><p>Loading Data...</p></div>
+
+<div id="match-modal" class="modal-overlay hidden">
+  <div class="modal-content">
+    <span class="close-btn" onclick="closeModal()">&times;</span>
+    <h2 id="modal-title">Match Details</h2>
+    <p id="modal-subtitle" style="color:var(--text-light);"></p>
+    <div style="background:#f9f9f9; padding:10px; border-radius:8px; margin:10px 0; text-align:center;">
+       <strong id="modal-winner" style="color:var(--success); font-size:1.2rem;"></strong>
+    </div>
+    <h3>Scorecard</h3>
+    <table id="modal-stats-table">
+      <thead><tr><th>Player</th><th>Runs</th><th>Wkts</th><th>Overs</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
 </div>
 
 <header>
-  <div class="header-content">
-    <h1>🏏 Club Manager</h1>
-    <div style="font-size: 0.8rem; cursor: pointer;" onclick="nav('login')">🔒 Login</div>
+  <div class="header-top">
+    <h1>🏏 Club Manager Pro</h1>
+    <div onclick="nav('login')" style="cursor:pointer; font-size:0.8rem;">🔒 Login</div>
   </div>
   <nav>
-    <button onclick="nav('home')" class="active" id="btn-home">Home</button>
-    <button onclick="nav('rankings')" id="btn-rankings">Player Rankings</button>
-    <button onclick="nav('teams')" id="btn-teams">Team Rankings</button>
-    <button onclick="nav('admin')" id="btn-admin" style="display:none;">Admin Panel</button>
-    <button onclick="nav('profile')" id="btn-profile" style="display:none;">My Profile</button>
+    <button onclick="nav('home')" id="btn-home" class="active">Home</button>
+    <button onclick="nav('rankings')" id="btn-rankings">Rankings</button>
+    <button onclick="nav('teams')" id="btn-teams">Teams</button>
+    <button onclick="nav('admin')" id="btn-admin" class="hidden">Admin</button>
+    <button onclick="nav('profile')" id="btn-profile" class="hidden">My Profile</button>
   </nav>
 </header>
 
-<div class="ticker-wrap" id="ticker">Loading Announcements...</div>
+<div class="ticker-wrap">
+  <div class="ticker" id="announcement-text">Welcome to the Club!</div>
+</div>
 
 <div class="container">
 
   <div id="home" class="view">
-    <div class="card" style="text-align: center; background: linear-gradient(135deg, white, #e3f2fd);">
-      <h2 style="border:none; color: var(--secondary);">Next Match Countdown</h2>
-      <div id="countdown" style="font-size: 2.5rem; font-weight: 800; color: var(--accent); margin: 10px 0;">-- : -- : --</div>
-      <p id="next-match-details" style="font-size: 1.1rem; color: var(--text-main);">Checking Schedule...</p>
+    <div class="card" style="text-align:center;">
+      <h2 style="border:none;">Next Match Countdown</h2>
+      <div id="countdown" style="font-size:2rem; font-weight:bold; color:var(--accent);">--:--:--</div>
+      <p id="next-match-info">Loading...</p>
     </div>
 
     <div class="card">
-      <h2>Recent & Upcoming Matches</h2>
-      <div style="overflow-x:auto;">
-        <table id="match-table">
-          <thead><tr><th>Date</th><th>Tournament</th><th>Match Details</th><th>Result</th></tr></thead>
-          <tbody></tbody>
-        </table>
-      </div>
+      <h2>Matches (Click for Details)</h2>
+      <table id="match-table">
+        <thead><tr><th>Date</th><th>Match</th><th>Result</th></tr></thead>
+        <tbody></tbody>
+      </table>
     </div>
   </div>
 
   <div id="rankings" class="view hidden">
     <div class="card">
-      <h2>🏆 Player Performance</h2>
-      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-        <select id="filter-p-season" onchange="renderRankings()"><option value="All">All Seasons</option></select>
-        <select id="filter-p-tourn" onchange="renderRankings()"><option value="All">All Tournaments</option></select>
+      <h2>Player Stats</h2>
+      <div style="display:flex; gap:5px;">
+        <select id="f-seas" onchange="renderRankings()"><option value="All">All Seasons</option></select>
+        <select id="f-tourn" onchange="renderRankings()"><option value="All">All Tournaments</option></select>
       </div>
-      <table id="p-rank-table">
-        <thead><tr><th>#</th><th>Player</th><th>Team</th><th>Runs</th><th>Wkts</th></tr></thead>
+      <table id="rank-table">
+        <thead><tr><th>#</th><th>Name</th><th>Runs</th><th>Wkts</th></tr></thead>
         <tbody></tbody>
       </table>
     </div>
@@ -164,171 +176,158 @@
 
   <div id="teams" class="view hidden">
     <div class="card">
-      <h2>🛡️ Team Standings</h2>
-      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-        <select id="filter-t-season" onchange="renderTeams()"><option value="All">All Seasons</option></select>
-        <select id="filter-t-tourn" onchange="renderTeams()"><option value="All">All Tournaments</option></select>
-      </div>
-      <table id="t-rank-table">
-        <thead><tr><th>#</th><th>Team</th><th>Mat</th><th>Won</th><th>Lost</th></tr></thead>
+      <h2>Team Standings</h2>
+      <table id="team-table">
+        <thead><tr><th>Team</th><th>Mat</th><th>Won</th><th>Lost</th></tr></thead>
         <tbody></tbody>
       </table>
     </div>
   </div>
 
   <div id="login" class="view hidden">
-    <div class="card" style="max-width:400px; margin: 40px auto;">
-      <h2>Secure Access</h2>
-      <select id="login-role" onchange="toggleLoginFields()">
+    <div class="card" style="max-width:400px; margin:0 auto;">
+      <h2>Login</h2>
+      <select id="login-role" onchange="toggleLogin()">
         <option value="admin">Admin</option>
         <option value="player">Player</option>
       </select>
-      
-      <div id="login-fields-admin">
-        <input type="text" value="admin" disabled>
-        <input type="password" id="admin-pass" placeholder="Enter Admin Password">
+      <div id="admin-login-box">
+        <input type="password" id="admin-pass" placeholder="Admin Password">
+        <button class="btn" onclick="doAdminLogin()">Admin Login</button>
       </div>
-      
-      <div id="login-fields-player" class="hidden">
-        <select id="login-player-select"><option>Loading Players...</option></select>
+      <div id="player-login-box" class="hidden">
+        <select id="login-player-id"></select>
         <input type="password" id="player-pass" placeholder="Your Password">
+        <button class="btn" onclick="doPlayerLogin()">Player Login</button>
       </div>
-
-      <button class="btn" onclick="doLogin()">Login</button>
     </div>
   </div>
 
   <div id="admin" class="view hidden">
     <div class="card">
-      <h2>📢 Manage Announcements</h2>
-      <div style="display:flex; gap:10px;">
-        <input type="text" id="ann-msg" placeholder="Message">
-        <select id="ann-prio" style="width:100px;"><option>High</option><option>Low</option></select>
-      </div>
-      <button class="btn" onclick="admAddAnnounce()">Add Announcement</button>
-      
-      <h4 style="margin-top:20px; border-bottom:1px solid #eee;">Current Announcements (Click X to Delete)</h4>
-      <div id="admin-ann-list"></div>
+      <h3>Manage Announcements</h3>
+      <input type="text" id="ann-msg" placeholder="Message">
+      <select id="ann-prio"><option>High</option><option>Low</option></select>
+      <button class="btn" onclick="api('addAnnouncement', {id:Date.now(), message:val('ann-msg'), priority:val('ann-prio'), date:new Date()})">Add Announcement</button>
+      <div id="admin-ann-list" style="margin-top:10px;"></div>
     </div>
 
     <div class="card">
-      <h2>👤 Manage Players</h2>
-      <input type="text" id="new-p-name" placeholder="Full Name">
-      <input type="text" id="new-p-team" placeholder="Team Name">
-      <select id="new-p-role"><option>Batsman</option><option>Bowler</option><option>All-Rounder</option></select>
-      <input type="password" id="new-p-pass" placeholder="Set Password">
-      <button class="btn" onclick="admAddPlayer()">Add Player</button>
-      
-      <h4 style="margin-top:20px; border-bottom:1px solid #eee;">Player List (Click X to Delete)</h4>
-      <div id="admin-player-list" style="max-height: 200px; overflow-y: scroll;"></div>
+      <h3>Manage Players</h3>
+      <input type="text" id="p-name" placeholder="Name">
+      <input type="text" id="p-team" placeholder="Team">
+      <input type="password" id="p-pass" placeholder="Password">
+      <button class="btn" onclick="api('addPlayer', {id:'P'+Date.now(), name:val('p-name'), team:val('p-team'), role:'All-Rounder', password:val('p-pass')})">Add Player</button>
+      <div id="admin-player-list" style="margin-top:10px; max-height:150px; overflow-y:scroll;"></div>
     </div>
 
     <div class="card">
-      <h2>⚔️ Tournament & Matches</h2>
-      
-      <div style="background:#f0f4f8; padding:15px; border-radius:8px; margin-bottom:15px;">
-        <h3>Create Tournament</h3>
-        <input type="text" id="new-t-name" placeholder="Tournament Name">
-        <input type="text" id="new-t-season" placeholder="Season Year (e.g. 2026)">
-        <button class="btn" onclick="admAddTourn()">Create Tournament</button>
+      <h3>Schedule Match</h3>
+      <select id="adm-tourn"></select>
+      <input type="text" id="m-stage" placeholder="Stage (e.g. Final)">
+      <input type="date" id="m-date">
+      <div style="display:flex; gap:5px;">
+        <input type="text" id="m-teamA" placeholder="Team A">
+        <input type="text" id="m-teamB" placeholder="Team B">
       </div>
-
-      <div style="background:#f0f4f8; padding:15px; border-radius:8px;">
-        <h3>Schedule Match</h3>
-        <select id="adm-tourn-select"></select>
-        <input type="text" id="new-m-stage" placeholder="Custom Stage Name (e.g. Semi Final 1)">
-        <input type="date" id="new-m-date">
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-          <input type="text" id="new-m-teamA" placeholder="Team A">
-          <input type="text" id="new-m-teamB" placeholder="Team B">
-        </div>
-        <button class="btn" onclick="admAddMatch()">Schedule Match</button>
-      </div>
+      <button class="btn" onclick="api('addMatch', {id:'M'+Date.now(), tournId:val('adm-tourn'), stage:val('m-stage'), date:val('m-date'), teamA:val('m-teamA'), teamB:val('m-teamB')})">Schedule</button>
     </div>
 
     <div class="card">
-      <h2>📝 Enter Match Scores</h2>
-      <select id="score-match-select" onchange="loadMatchForScoring()"></select>
-      
-      <div id="scoring-area" class="hidden">
-        <div style="background:#e3f2fd; padding:10px; border-radius:8px; margin:10px 0;">
-           <strong>Add Player Stats:</strong>
-           <select id="score-player-select"></select>
-           <div style="display:flex; gap:5px;">
-             <input type="number" id="s-runs" placeholder="Runs">
-             <input type="number" id="s-wkt" placeholder="Wkts">
-             <input type="number" id="s-ovr" placeholder="Overs">
-           </div>
-           <button class="btn" style="background:var(--secondary);" onclick="queueStat()">+ Add to List</button>
-        </div>
-
-        <div id="stat-queue" style="margin:10px 0; padding:10px; border:1px dashed #ccc;"><em>Stats queued here...</em></div>
-        
-        <input type="text" id="s-winner" placeholder="Winner Team Name">
-        <button class="btn" style="background:var(--success);" onclick="submitResult()">FINAL SUBMIT</button>
+      <h3>Update Scores</h3>
+      <select id="score-match" onchange="enableScoring()"></select>
+      <div id="score-box" class="hidden">
+         <select id="score-player"></select>
+         <div style="display:flex; gap:5px;">
+           <input type="number" id="s-runs" placeholder="Runs">
+           <input type="number" id="s-wkt" placeholder="Wkts">
+           <input type="number" id="s-ovr" placeholder="Overs">
+         </div>
+         <button class="btn" style="background:#555;" onclick="queueStat()">+ Add Stat</button>
+         <div id="stat-queue" style="padding:10px; background:#eee; margin:10px 0;"></div>
+         <input type="text" id="s-winner" placeholder="Winner Team">
+         <button class="btn" onclick="submitResult()">Submit Final Result</button>
       </div>
     </div>
   </div>
 
   <div id="profile" class="view hidden">
     <div class="card">
-      <h2 id="profile-name">My Profile</h2>
-      <p><strong>Team:</strong> <span id="profile-team">-</span></p>
-      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; text-align:center; margin-top:20px;">
-         <div style="background:#eef; padding:15px; border-radius:8px;">
-            <div style="font-size:2rem; font-weight:bold; color:var(--primary);" id="profile-runs">0</div>
-            <div>Total Runs</div>
-         </div>
-         <div style="background:#eef; padding:15px; border-radius:8px;">
-            <div style="font-size:2rem; font-weight:bold; color:var(--primary);" id="profile-wkts">0</div>
-            <div>Total Wickets</div>
-         </div>
+      <h2 id="prof-name">Player Name</h2>
+      <p><strong>Team:</strong> <span id="prof-team">-</span></p>
+      
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:20px;">
+        <div style="background:#eef; padding:10px; border-radius:8px; text-align:center;">
+          <div style="font-size:1.5rem; color:var(--primary);" id="prof-runs">0</div>
+          <small>Runs</small>
+        </div>
+        <div style="background:#eef; padding:10px; border-radius:8px; text-align:center;">
+          <div style="font-size:1.5rem; color:var(--primary);" id="prof-wkts">0</div>
+          <small>Wickets</small>
+        </div>
+        <div style="background:#eef; padding:10px; border-radius:8px; text-align:center;">
+          <div style="font-size:1.5rem; color:var(--primary);" id="prof-tourn">0</div>
+          <small>Tournaments</small>
+        </div>
+        <div style="background:#eef; padding:10px; border-radius:8px; text-align:center;">
+          <div style="font-size:1.5rem; color:var(--primary);" id="prof-seasons">0</div>
+          <small>Seasons</small>
+        </div>
       </div>
+
+      <h3>Match History</h3>
+      <table id="prof-history">
+        <thead><tr><th>Date</th><th>Match</th><th>Runs</th><th>Wkts</th></tr></thead>
+        <tbody></tbody>
+      </table>
     </div>
   </div>
 
 </div>
 
 <script>
-// --- CONFIGURATION ---
 const API_URL = "https://script.google.com/macros/s/AKfycbyFgso6g9lPQVCbNUHtM1g-xqJQy9HR4kbOAWAL_1Eb_TIWLREEC76PggnzLV0TjeAZ/exec";
 let DB = {};
 let statQueue = [];
-let currentUser = null;
+let currentUser = null; 
+let currentView = 'home'; // To maintain state after refresh
 
-// --- INITIALIZATION ---
 window.onload = async () => {
   await loadData();
   setInterval(updateCountdown, 1000);
 };
 
-// --- DATA LOADER ---
+// --- CORE DATA LOAD (NO REFRESH) ---
 async function loadData() {
+  document.getElementById('loader').classList.remove('hidden');
   try {
     const res = await fetch(API_URL + "?action=getAllData");
     const json = await res.json();
-    if(json.status === "error") throw new Error(json.message);
     DB = json;
     
-    initUI();
-  } catch(e) {
-    alert("Connectivity Error: " + e.message);
-  } finally {
-    document.getElementById('loader').classList.add('hidden');
-  }
+    refreshUI();
+  } catch(e) { console.error(e); alert("Connection Failed"); }
+  document.getElementById('loader').classList.add('hidden');
 }
 
-function initUI() {
-  // Announcements
+function refreshUI() {
+  // 1. Ticker
   if(DB.announcements) {
-     const text = DB.announcements.map(a => `[${a.Priority}] ${a.Message}`).join("  ---  ");
-     document.getElementById('ticker').innerText = text || "No Announcements";
+    const text = DB.announcements.map(a => `[${a.Priority}] ${a.Message}`).join("  ---  ");
+    document.getElementById('announcement-text').innerText = text || "Welcome to the Club";
   }
 
+  // 2. Renderers
   renderHome();
   renderRankings();
   renderTeams();
   populateDropdowns();
+  
+  // 3. Admin Lists (If in Admin view)
+  if(currentView === 'admin') renderAdminLists();
+  
+  // 4. Profile (If logged in)
+  if(currentUser) renderProfile(currentUser);
 }
 
 // --- RENDERERS ---
@@ -336,305 +335,245 @@ function renderHome() {
   const tbody = document.querySelector('#match-table tbody');
   tbody.innerHTML = "";
   
-  // Sort matches by date descending
   const sorted = [...DB.matches].sort((a,b) => new Date(b.Date) - new Date(a.Date));
   
   sorted.forEach(m => {
-    const t = DB.tournaments.find(x => x.ID == m.TournamentID);
-    const d = new Date(m.Date).toLocaleDateString();
-    
-    tbody.innerHTML += `
-      <tr>
-        <td>${d}</td>
-        <td>${t ? t.Name : 'Unknown'}</td>
-        <td>
-          <div style="font-weight:bold;">${m.TeamA} vs ${m.TeamB}</div>
-          <span class="tag tag-stage">${m.Stage}</span>
-        </td>
-        <td>${m.Winner ? `<span style="color:green; font-weight:bold;">${m.Winner} Won</span>` : '<span style="color:orange;">Scheduled</span>'}</td>
-      </tr>
-    `;
+     const t = DB.tournaments.find(x => x.ID == m.TournamentID);
+     let dStr = m.Date;
+     try { dStr = new Date(m.Date).toLocaleDateString(); } catch(e){}
+
+     const tr = document.createElement('tr');
+     tr.className = "clickable";
+     tr.innerHTML = `<td>${dStr}</td><td>${m.TeamA} vs ${m.TeamB}<br><small>${m.Stage}</small></td><td>${m.Winner || "Scheduled"}</td>`;
+     tr.onclick = () => openMatchDetails(m);
+     tbody.appendChild(tr);
   });
 
-  // Countdown logic
-  const upcoming = DB.matches.filter(m => new Date(m.Date) > new Date()).sort((a,b) => new Date(a.Date) - new Date(b.Date))[0];
-  if(upcoming) {
-    window.nextEvent = new Date(upcoming.Date);
-    document.getElementById('next-match-details').innerText = `${upcoming.TeamA} vs ${upcoming.TeamB} (${upcoming.Stage})`;
+  // Countdown
+  const future = DB.matches.filter(m => new Date(m.Date) > new Date()).sort((a,b) => new Date(a.Date) - new Date(b.Date))[0];
+  if(future) {
+    window.nextEvent = new Date(future.Date);
+    document.getElementById('next-match-info').innerText = `${future.TeamA} vs ${future.TeamB} (${future.Stage})`;
   } else {
-    document.getElementById('next-match-details').innerText = "No upcoming matches";
+    document.getElementById('next-match-info').innerText = "No upcoming matches";
   }
 }
 
 function updateCountdown() {
   if(!window.nextEvent) return;
-  const now = new Date();
-  const diff = window.nextEvent - now;
-  
-  if(diff <= 0) { document.getElementById('countdown').innerText = "LIVE NOW"; return; }
-  
+  const diff = window.nextEvent - new Date();
+  if(diff <= 0) { document.getElementById('countdown').innerText="LIVE"; return; }
   const d = Math.floor(diff / (1000 * 60 * 60 * 24));
   const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-  const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-  
-  document.getElementById('countdown').innerText = `${d}d ${h}h ${m}m`;
+  document.getElementById('countdown').innerText = `${d}d ${h}h`;
 }
 
-function renderRankings() {
-  const season = val('filter-p-season');
-  const tourn = val('filter-p-tourn');
+// --- MATCH DETAILS POPUP ---
+function openMatchDetails(m) {
+  const t = DB.tournaments.find(x => x.ID == m.TournamentID);
   
-  let stats = {}; // { PlayerID: {name, team, runs, wkts} }
-
-  DB.stats.forEach(s => {
-    // Link stats to match & tournament to filter
-    const match = DB.matches.find(m => m.MatchID == s.MatchID);
-    if(!match) return;
-    const t = DB.tournaments.find(tr => tr.ID == match.TournamentID);
-    
-    if(season !== "All" && t.Season != season) return;
-    if(tourn !== "All" && t.ID != tourn) return;
-
-    if(!stats[s.PlayerID]) {
-      const p = DB.players.find(x => x.ID == s.PlayerID);
-      stats[s.PlayerID] = { 
-        name: p ? p.Name : "Unknown", 
-        team: p ? p.Team : "-",
-        runs: 0, wkts: 0 
-      };
-    }
-    stats[s.PlayerID].runs += Number(s.Runs);
-    stats[s.PlayerID].wkts += Number(s.Wickets);
-  });
-
-  const tbody = document.querySelector('#p-rank-table tbody');
+  document.getElementById('modal-title').innerText = `${m.TeamA} vs ${m.TeamB}`;
+  document.getElementById('modal-subtitle').innerText = `${t ? t.Name : ''} - ${m.Stage} (${new Date(m.Date).toLocaleDateString()})`;
+  document.getElementById('modal-winner').innerText = m.Winner ? `Winner: ${m.Winner}` : "Match Scheduled";
+  
+  const tbody = document.querySelector('#modal-stats-table tbody');
   tbody.innerHTML = "";
-  Object.values(stats).sort((a,b) => b.runs - a.runs).forEach((p, i) => {
-    tbody.innerHTML += `<tr><td>${i+1}</td><td>${p.name}</td><td>${p.team}</td><td>${p.runs}</td><td>${p.wkts}</td></tr>`;
-  });
-}
-
-function renderTeams() {
-  const season = val('filter-t-season');
-  const tourn = val('filter-t-tourn');
   
-  let teams = {}; // { TeamName: {mat, won, lost} }
-
-  DB.matches.forEach(m => {
-    if(m.Status !== "Completed") return;
-    
-    const t = DB.tournaments.find(tr => tr.ID == m.TournamentID);
-    if(season !== "All" && t.Season != season) return;
-    if(tourn !== "All" && t.ID != tourn) return;
-
-    [m.TeamA, m.TeamB].forEach(tm => {
-      if(!teams[tm]) teams[tm] = {mat:0, won:0, lost:0};
-      teams[tm].mat++;
-      if(m.Winner === tm) teams[tm].won++; else teams[tm].lost++;
-    });
-  });
-
-  const tbody = document.querySelector('#t-rank-table tbody');
-  tbody.innerHTML = "";
-  Object.keys(teams).sort((a,b) => teams[b].won - teams[a].won).forEach((tm, i) => {
-    const d = teams[tm];
-    tbody.innerHTML += `<tr><td>${i+1}</td><td>${tm}</td><td>${d.mat}</td><td>${d.won}</td><td>${d.lost}</td></tr>`;
-  });
-}
-
-// --- ADMIN & INTERACTION ---
-function nav(id) {
-  document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
-  document.getElementById(id).classList.remove('hidden');
-  
-  // Nav Button State
-  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
-  const btn = document.getElementById('btn-' + id);
-  if(btn) btn.classList.add('active');
-}
-
-function toggleLoginFields() {
-  const role = val('login-role');
-  document.getElementById('login-fields-admin').classList.toggle('hidden', role !== 'admin');
-  document.getElementById('login-fields-player').classList.toggle('hidden', role !== 'player');
-}
-
-function doLogin() {
-  const role = val('login-role');
-  if(role === 'admin') {
-    if(val('admin-pass') === "9908") {
-      alert("Admin Access Granted");
-      document.getElementById('btn-admin').style.display = 'inline-block';
-      nav('admin');
-      renderAdminLists();
-    } else alert("Invalid Admin Password");
+  const mStats = DB.stats.filter(s => s.MatchID == m.MatchID);
+  if(mStats.length === 0) {
+    tbody.innerHTML = "<tr><td colspan='4' style='text-align:center;'>No detailed stats available yet.</td></tr>";
   } else {
-    // Player Login
-    const pid = val('login-player-select');
-    const pass = val('player-pass');
-    const player = DB.players.find(p => p.ID == pid && p.Password == pass);
-    
-    if(player) {
-      currentUser = player;
-      document.getElementById('btn-profile').style.display = 'inline-block';
-      loadProfile(player);
-      nav('profile');
-    } else alert("Invalid Credentials");
+    mStats.forEach(s => {
+      const p = DB.players.find(x => x.ID == s.PlayerID);
+      tbody.innerHTML += `<tr><td>${p ? p.Name : 'Unknown'}</td><td>${s.Runs}</td><td>${s.Wickets}</td><td>${s.Overs}</td></tr>`;
+    });
   }
+  
+  document.getElementById('match-modal').classList.remove('hidden');
 }
 
-function loadProfile(p) {
-  document.getElementById('profile-name').innerText = p.Name;
-  document.getElementById('profile-team').innerText = p.Team;
+function closeModal() { document.getElementById('match-modal').classList.add('hidden'); }
+
+// --- PROFILE & STATS ---
+function renderProfile(p) {
+  document.getElementById('prof-name').innerText = p.Name;
+  document.getElementById('prof-team').innerText = p.Team;
   
-  // Calc Stats
-  let runs = 0, wkts = 0;
-  DB.stats.filter(s => s.PlayerID == p.ID).forEach(s => {
+  const pStats = DB.stats.filter(s => s.PlayerID == p.ID);
+  
+  let runs=0, wkts=0;
+  let matchesPlayed = new Set();
+  let tournsPlayed = new Set();
+  let seasonsPlayed = new Set();
+  
+  const tbody = document.querySelector('#prof-history tbody');
+  tbody.innerHTML = "";
+
+  pStats.forEach(s => {
     runs += Number(s.Runs); wkts += Number(s.Wickets);
+    matchesPlayed.add(s.MatchID);
+    
+    const m = DB.matches.find(x => x.MatchID == s.MatchID);
+    if(m) {
+       const t = DB.tournaments.find(x => x.ID == m.TournamentID);
+       if(t) {
+         tournsPlayed.add(t.ID);
+         seasonsPlayed.add(t.Season);
+       }
+       // History Row
+       tbody.innerHTML += `<tr><td>${new Date(m.Date).toLocaleDateString()}</td><td>vs ${m.TeamA === p.Team ? m.TeamB : m.TeamA}</td><td>${s.Runs}</td><td>${s.Wickets}</td></tr>`;
+    }
   });
-  document.getElementById('profile-runs').innerText = runs;
-  document.getElementById('profile-wkts').innerText = wkts;
+
+  document.getElementById('prof-runs').innerText = runs;
+  document.getElementById('prof-wkts').innerText = wkts;
+  document.getElementById('prof-tourn').innerText = tournsPlayed.size;
+  document.getElementById('prof-seasons').innerText = seasonsPlayed.size;
 }
 
-// --- ADMIN ACTIONS ---
+// --- ADMIN LOGIC (NO REFRESH) ---
+function doAdminLogin() {
+  if(val('admin-pass') === "9908") {
+    nav('admin');
+    document.getElementById('btn-admin').classList.remove('hidden');
+    renderAdminLists();
+  } else alert("Wrong Password");
+}
+
 function renderAdminLists() {
-  // Player List
-  const plist = document.getElementById('admin-player-list');
-  plist.innerHTML = "";
+  const pl = document.getElementById('admin-player-list');
+  pl.innerHTML = "";
   DB.players.forEach(p => {
-    plist.innerHTML += `<div style="display:flex; justify-content:space-between; padding:5px; border-bottom:1px solid #eee;">
-      <span>${p.Name} (${p.Team})</span>
-      <button class="btn btn-del" onclick="api('deletePlayer', {id:'${p.ID}'})">X</button>
-    </div>`;
+    pl.innerHTML += `<div style="border-bottom:1px solid #eee; padding:5px; display:flex; justify-content:space-between;">${p.Name} <button class="btn" style="width:30px; padding:2px; margin:0; background:red;" onclick="api('deletePlayer', {id:'${p.ID}'})">X</button></div>`;
   });
-
-  // Announcement List
-  const alist = document.getElementById('admin-ann-list');
-  alist.innerHTML = "";
+  
+  const al = document.getElementById('admin-ann-list');
+  al.innerHTML = "";
   DB.announcements.forEach(a => {
-    alist.innerHTML += `<div style="display:flex; justify-content:space-between; padding:5px; border-bottom:1px solid #eee;">
-      <span>${a.Message}</span>
-      <button class="btn btn-del" onclick="api('deleteAnnouncement', {id:'${a.ID}'})">X</button>
-    </div>`;
+    al.innerHTML += `<div style="border-bottom:1px solid #eee; padding:5px; display:flex; justify-content:space-between;">${a.Message} <button class="btn" style="width:30px; padding:2px; margin:0; background:red;" onclick="api('deleteAnnouncement', {id:'${a.ID}'})">X</button></div>`;
   });
 }
 
-function admAddAnnounce() {
-  api('addAnnouncement', {
-    id: Date.now(),
-    message: val('ann-msg'),
-    priority: val('ann-prio'),
-    date: new Date()
-  });
-}
-
-function admAddPlayer() {
-  api('addPlayer', {
-    id: "P" + Date.now(),
-    name: val('new-p-name'),
-    role: val('new-p-role'),
-    team: val('new-p-team'),
-    password: val('new-p-pass')
-  });
-}
-
-function admAddTourn() {
-  api('addTournament', {
-    id: "T" + Date.now().toString().substr(-5),
-    name: val('new-t-name'),
-    season: val('new-t-season')
-  });
-}
-
-function admAddMatch() {
-  api('addMatch', {
-    id: "M" + Date.now().toString().substr(-5),
-    tournId: val('adm-tourn-select'),
-    stage: val('new-m-stage'),
-    date: val('new-m-date'),
-    teamA: val('new-m-teamA'),
-    teamB: val('new-m-teamB')
-  });
-}
-
-// --- SCORING ---
-function loadMatchForScoring() {
-  document.getElementById('scoring-area').classList.remove('hidden');
-  statQueue = [];
-  document.getElementById('stat-queue').innerText = "";
-}
-
-function queueStat() {
-  const pid = val('score-player-select');
-  const pname = document.getElementById('score-player-select').options[document.getElementById('score-player-select').selectedIndex].text;
-  
-  const item = {
-    linkId: "L" + Date.now() + Math.floor(Math.random()*100),
-    matchId: val('score-match-select'),
-    playerId: pid,
-    runs: val('s-runs') || 0,
-    wickets: val('s-wkt') || 0,
-    overs: val('s-ovr') || 0,
-    catches: 0
-  };
-  
-  statQueue.push(item);
-  document.getElementById('stat-queue').innerHTML += `<div>+ ${pname}: ${item.runs} runs, ${item.wickets} wkts</div>`;
-  
-  // Send single stat immediately (Simpler for GAS limits)
-  api('addStat', item, true); 
-}
-
-function submitResult() {
-  api('updateMatchResult', {
-    matchId: val('score-match-select'),
-    winner: val('s-winner')
-  });
-}
-
-// --- UTILS ---
-function val(id) { return document.getElementById(id).value; }
-
-function populateDropdowns() {
-  // Players
-  const pOpts = DB.players.map(p => `<option value="${p.ID}">${p.Name}</option>`).join("");
-  document.getElementById('login-player-select').innerHTML = pOpts;
-  document.getElementById('score-player-select').innerHTML = pOpts;
-
-  // Tournaments
-  const tOpts = DB.tournaments.map(t => `<option value="${t.ID}">${t.Name}</option>`).join("");
-  document.getElementById('adm-tourn-select').innerHTML = tOpts;
-  document.getElementById('filter-p-tourn').innerHTML += tOpts;
-  document.getElementById('filter-t-tourn').innerHTML += tOpts;
-
-  // Seasons (Unique)
-  const seasons = [...new Set(DB.tournaments.map(t => t.Season))];
-  const sOpts = seasons.map(s => `<option value="${s}">${s}</option>`).join("");
-  document.getElementById('filter-p-season').innerHTML += sOpts;
-  document.getElementById('filter-t-season').innerHTML += sOpts;
-
-  // Scoring Matches
-  const mOpts = DB.matches.filter(m => m.Status !== 'Completed').map(m => `<option value="${m.MatchID}">${m.TeamA} vs ${m.TeamB}</option>`).join("");
-  document.getElementById('score-match-select').innerHTML = "<option>Select Match...</option>" + mOpts;
-}
-
-// --- API HANDLER ---
-function api(action, payload, silent = false) {
-  if(!silent) document.getElementById('loader').classList.remove('hidden');
+function api(action, payload) {
+  // Optimistic UI Update (Immediate) OR Wait for Load
+  // To keep it simple and robust: Show loader, POST, then Reload Data
   
   payload.action = action;
-  payload.password = "9908"; // Auto-inject admin pass
-
+  payload.password = "9908";
+  
+  document.getElementById('loader').classList.remove('hidden');
+  
   fetch(API_URL, {
     method: 'POST',
     mode: 'no-cors',
     body: JSON.stringify(payload)
-  }).then(() => {
-    if(!silent) {
-      alert("Success! Data updated.");
-      location.reload();
-    }
-  }).catch(e => alert("Error: " + e));
+  }).then(async () => {
+    // Wait 1s for Sheet to update then fetch
+    setTimeout(async () => {
+        await loadData(); // Reloads data and refreshes UI
+        document.getElementById('loader').classList.add('hidden');
+        alert("Action Completed");
+    }, 1500);
+  });
+}
+
+// --- UTILS ---
+function nav(id) {
+  document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
+  document.getElementById(id).classList.remove('hidden');
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  const btn = document.getElementById('btn-'+id);
+  if(btn) btn.classList.add('active');
+  currentView = id;
+}
+
+function val(id) { return document.getElementById(id).value; }
+
+function toggleLogin() {
+  const role = val('login-role');
+  document.getElementById('admin-login-box').classList.toggle('hidden', role !== 'admin');
+  document.getElementById('player-login-box').classList.toggle('hidden', role !== 'player');
+}
+
+function doPlayerLogin() {
+  const pid = val('login-player-id');
+  const pass = val('player-pass');
+  const p = DB.players.find(x => x.ID == pid && x.Password == pass);
+  if(p) {
+    currentUser = p;
+    document.getElementById('btn-profile').classList.remove('hidden');
+    renderProfile(p);
+    nav('profile');
+  } else alert("Invalid Login");
+}
+
+function populateDropdowns() {
+  const pOpts = DB.players.map(p => `<option value="${p.ID}">${p.Name}</option>`).join("");
+  document.getElementById('login-player-id').innerHTML = pOpts;
+  document.getElementById('score-player').innerHTML = pOpts;
+  
+  const tOpts = DB.tournaments.map(t => `<option value="${t.ID}">${t.Name}</option>`).join("");
+  document.getElementById('adm-tourn').innerHTML = tOpts;
+  document.getElementById('f-tourn').innerHTML += tOpts;
+  
+  const mOpts = DB.matches.filter(m => m.Status !== "Completed").map(m => `<option value="${m.MatchID}">${m.TeamA} vs ${m.TeamB}</option>`).join("");
+  document.getElementById('score-match').innerHTML = "<option>Select Match...</option>" + mOpts;
+}
+
+function enableScoring() { document.getElementById('score-box').classList.remove('hidden'); statQueue = []; document.getElementById('stat-queue').innerHTML=""; }
+
+function queueStat() {
+   const pid = val('score-player');
+   const name = document.getElementById('score-player').options[document.getElementById('score-player').selectedIndex].text;
+   const item = {linkId:"L"+Date.now(), matchId:val('score-match'), playerId:pid, runs:val('s-runs')||0, wickets:val('s-wkt')||0, overs:val('s-ovr')||0, catches:0};
+   statQueue.push(item);
+   document.getElementById('stat-queue').innerHTML += `<div>${name}: ${item.runs} Runs, ${item.wickets} Wkts</div>`;
+   api('addStat', item); // Send immediately
+}
+
+function submitResult() {
+   api('updateMatchResult', {matchId:val('score-match'), winner:val('s-winner')});
+}
+
+function renderRankings() {
+   const sFilter = val('f-seas');
+   const tFilter = val('f-tourn');
+   let stats = {};
+   DB.stats.forEach(s => {
+      const m = DB.matches.find(x => x.MatchID == s.MatchID);
+      if(!m) return;
+      const t = DB.tournaments.find(x => x.ID == m.TournamentID);
+      if(sFilter !== "All" && t.Season != sFilter) return;
+      if(tFilter !== "All" && t.ID != tFilter) return;
+      
+      if(!stats[s.PlayerID]) stats[s.PlayerID] = {name:"", runs:0, wkts:0};
+      const p = DB.players.find(x => x.ID == s.PlayerID);
+      stats[s.PlayerID].name = p ? p.Name : "Unknown";
+      stats[s.PlayerID].runs += Number(s.Runs);
+      stats[s.PlayerID].wkts += Number(s.Wickets);
+   });
+   
+   const tbody = document.querySelector('#rank-table tbody');
+   tbody.innerHTML = "";
+   Object.values(stats).sort((a,b) => b.runs - a.runs).forEach((p,i) => {
+      tbody.innerHTML += `<tr><td>${i+1}</td><td>${p.name}</td><td>${p.runs}</td><td>${p.wkts}</td></tr>`;
+   });
+}
+
+function renderTeams() {
+   let teams = {};
+   DB.matches.filter(m => m.Status === "Completed").forEach(m => {
+      [m.TeamA, m.TeamB].forEach(tm => {
+         if(!teams[tm]) teams[tm] = {mat:0, won:0, lost:0};
+         teams[tm].mat++;
+         if(m.Winner === tm) teams[tm].won++; else teams[tm].lost++;
+      });
+   });
+   const tbody = document.querySelector('#team-table tbody');
+   tbody.innerHTML = "";
+   Object.keys(teams).sort((a,b) => teams[b].won - teams[a].won).forEach(tm => {
+      tbody.innerHTML += `<tr><td>${tm}</td><td>${teams[tm].mat}</td><td>${teams[tm].won}</td><td>${teams[tm].lost}</td></tr>`;
+   });
 }
 
 </script>
